@@ -1,10 +1,9 @@
 const products = ['Buy', 'Sell', 'Rent'];
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import herobg from '../assets/images/herobg.jpg';
 export default function Hero() {
   return (
     <section className="bg-brand-200">
-      <h1 className="text-center pt-20 capitalize text-4xl font-bold text-brandText-500">
+      <h1 className="text-center pt-20 capitalize text-6xl font-bold text-brandText-500">
         We Help To Buy, Sell <br />& Rent You House
       </h1>
       <div className="flex justify-center pt-10">
@@ -37,9 +36,7 @@ export default function Hero() {
           </button>
         </div>
       </div>
-      <div>
-        <img src={herobg} alt="" />
-      </div>
+      <div className="h-[70vh] my-8 bg-center bg-hero-bottom" />
     </section>
   );
 }
