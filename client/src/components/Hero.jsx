@@ -18,8 +18,8 @@ export default function Hero() {
           </button>
         ))}
       </div>
-      <div className="flex justify-center pt-5">
-        <div className="flex justify-between items-center w-[50vw] bg-[white] h-20 pl-6 rounded-full">
+      <div className="flex justify-center pt-10">
+        <div className="flex justify-between items-center w-[50vw] bg-[white] h-14 pl-6 rounded-full">
           <input
             type="text"
             name=""
