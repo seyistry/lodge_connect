@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const startServer = async () => {
   try {
     // connection to mongoDB
-    connectDB();
+    await connectDB();
 
     // listening to incoming requests
     server.listen(PORT, () => console.log(`server is running on http://localhost:${PORT}`));
