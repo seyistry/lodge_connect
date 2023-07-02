@@ -2,7 +2,12 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'reg-back': "url('./src/assets/Register-Background.png')",
+        
+      }
+    },
   },
   plugins: [],
 };
