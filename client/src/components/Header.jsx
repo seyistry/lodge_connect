@@ -14,7 +14,7 @@ function classNames(...classes) {
 
 export default function Example() {
   return (
-    <Disclosure as="nav" className="bg-brand-100">
+    <Disclosure as="nav" className="bg-brand-200">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -49,7 +49,7 @@ export default function Example() {
                       <a
                         key={item.name}
                         href={item.href}
-                        className="text-gray-300 hover:bg-brand-500 hover:text-[white] rounded-md px-3 py-2 text-sm font-medium"
+                        className="text-gray-300 hover:bg-brand-500 hover:text-[white] rounded-3xl px-6 py-2 text-sm font-medium"
                         aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
