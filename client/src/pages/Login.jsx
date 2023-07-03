@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useRef, useState, useEffect } from "react";
 import "./reg.css"
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import { userContext } from './UserContext';
+
+
 
 // regex function
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -12,17 +15,17 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 
 
-const Register = () => {
- 
+const Login = () => {
+   const [setUser] = useContext(userContext)
 
 
     // stating the useSates for input fields
-    const [user, setUser] = useState('');
-    const [validName, setValidName] = useState(false);
+    const [email, setEmail] = useState('');
+    // const [validName, setValidName] = useState(false);
     
 
     const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
+    // const [validPwd, setValidPwd] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
@@ -31,14 +34,14 @@ const Register = () => {
     //     userRef.current.focus();
     // }, [])
 
-    useEffect(() => {
-        setValidName(USER_REGEX.test(user));
-    }, [user])
+    // useEffect(() => {
+    //     setValidName(USER_REGEX.test(user));
+    // }, [user])
 
-    useEffect(() => {
-        setValidPwd(PWD_REGEX.test(pwd));
+    // useEffect(() => {
+    //     setValidPwd(PWD_REGEX.test(pwd));
         
-    }, [pwd])
+    // }, [pwd])
 
    
 
@@ -50,7 +53,7 @@ const Register = () => {
         e.preventDefault();
         try {
             const data = await axios.post("/",
-                JSON.stringify({ user, pwd: password}),
+                JSON.stringify({ email, pwd: password}),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
@@ -100,18 +103,13 @@ const Register = () => {
                         <form onSubmit={handleLoginSubmit} action='#' >
 
                             <div className='mb-4'>
-                                <input type='text' placeholder='Firstname'
+                                <input type='email' placeholder='Email'
                                     required
 
-                                    onChange={(e) => setUser(e.target.value)}
+                                    onChange={(e) => setEmail(e.target.value)}
 
                                     value={user} className="border border-gray-400 py-1 px-2 w-full rounded-sm" />
-                                <p className={user && !validName ? "instructions" : "offscreen"}>
-
-                                    4 to 24 characters.<br />
-                                    Must begin with a letter.<br />
-                                    Letters, numbers, underscores, hyphens allowed.
-                                </p>
+               
 
                             </div>
 
@@ -126,24 +124,11 @@ const Register = () => {
                                     onChange={(e) => setPwd(e.target.value)} className='border border-gray-400 py-1
                                  px-2 w-full rounded-sm' />
 
-                                <p className={pwd && !validPwd ? "instructions" : "offscreen"}>
-
-                                    8 to 24 characters.<br />
-                                    Must include uppercase and lowercase letters, a number and a special character.<br />
-                                    Allowed special characters: <span aria-label="exclamation mark">!</span> <span aria-label="at symbol">@</span> <span aria-label="hashtag">#</span> <span aria-label="dollar sign">$</span> <span aria-label="percent">%</span>
-                                </p>
-
 
                             </div>
 
 
-                            <div class="mt-5">
-                                <input type="checkbox" required className="border border-gray-400" />
-                                <span>
-                                    I accept the <a href="#" class="text-purple-500 font-semibold">Terms of Use</a> &  <a href="#" class="text-purple-500 font-semibold">Privacy Policy</a>
-                                </span>
-
-                            </div>
+                           
                             <div class="mt-5">
                                 <button class="w-full bg-purple-500 py-3 text-center text-white">Register Now</button>
                             </div>
@@ -162,4 +147,4 @@ const Register = () => {
     )
 
 }
-export default Register
+export default Login
