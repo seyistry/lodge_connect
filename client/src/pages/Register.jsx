@@ -1,32 +1,39 @@
 import React from 'react'
 import { useRef, useState, useEffect } from "react";
 import "./reg.css"
-import { Link, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 // regex function
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
+const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 
 
 
 
 const Register = () => {
- 
+    // const userRef = useRef();
+    // const errRef = useRef();
+
 
 
     // stating the useSates for input fields
     const [user, setUser] = useState('');
     const [validName, setValidName] = useState(false);
-    
+    const [userFocus, setUserFocus] = useState(false);
 
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
 
+    const [email, setEmail] = useState('');
+    const [validEmail, setValidEmail] = useState(false);
+
+    const [matchPwd, setMatchPwd] = useState('');
+    const [validMatch, setValidMatch] = useState(false);
+
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
-    const [redirect, sectRedirect] =useState(false)
+
     // useEffect(() => {
     //     userRef.current.focus();
     // }, [])
@@ -37,48 +44,50 @@ const Register = () => {
 
     useEffect(() => {
         setValidPwd(PWD_REGEX.test(pwd));
-        
-    }, [pwd])
+        setValidMatch(pwd === matchPwd)
+    }, [pwd, matchPwd])
 
-   
+    useEffect(() => {
+        setValidEmail(emailRegex.test(email));
+    }, [email])
 
     useEffect(() => {
         setErrMsg('');
-    }, [user, pwd])
+    }, [user, pwd, matchPwd])
 
-    const handleLoginSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const data = await axios.post("/",
-                JSON.stringify({ user, pwd: password}),
+            const response = await axios.post("/",
+                JSON.stringify({ user, pwd:password, email, }),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
-            setUser(data)
             console.log(response?.data);
             console.log(response?.accessToken);
             console.log(JSON.stringify(response))
             setSuccess(true);
-            sectRedirect(true)
             //clear state and controlled inputs
             //need value attrib on inputs for this
-            
+            setUser('');
+            setPwd('');
+            setMatchPwd('');
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
+            } else if (err.response?.status === 409) {
+                setErrMsg('Username Taken');
             } else {
-                setErrMsg('Login Failed')
+                setErrMsg('Registration Failed')
             }
             errRef.current.focus();
         }
 
     }
 
-    if(redirect){
-        return <Navigate to ={"/"} />
-    }
+
 
     return (
 
@@ -97,7 +106,7 @@ const Register = () => {
                         <p className='mb-4'> Create your account. It’s free and only take a minute</p>
 
                         {/* create the input forms */}
-                        <form onSubmit={handleLoginSubmit} action='#' >
+                        <form onSubmit={handleSubmit} action='#' >
 
                             <div className='mb-4'>
                                 <input type='text' placeholder='Firstname'
@@ -114,8 +123,37 @@ const Register = () => {
                                 </p>
 
                             </div>
+                            {/* Surname input */}
+                            <div className='mt-5'>
+                                <input type='text'
+                                    placeholder='Surname'
+
+                                    required
+
+                                    className='border border-gray-400 py-1
+                                 px-2 w-full rounded-sm' />
 
 
+
+
+                            </div>
+                            {/* email input */}
+                            <div className='mt-5'>
+                                <input type='email' placeholder='Email'
+                                    required
+                                    value={email}
+                                    onChange={(e) => { setEmail(e.target.value) }}
+                                    className='border border-gray-400 py-1 px-2 w-full rounded-sm' />
+
+                                <p className={email && !validEmail ? "instructions" : "offscreen"}>
+
+                                    Please input a correct Email address
+                                </p>
+                            </div>
+
+                            <div className='mt-5'>
+                                <input type='text' placeholder='Address' className='border border-gray-400 py-1 px-2 w-full rounded-sm' />
+                            </div>
                             {/* Password input */}
                             <div className='mt-5'>
                                 <input type='password'
@@ -135,8 +173,19 @@ const Register = () => {
 
 
                             </div>
+                            {/* confirm password */}
+                            <div className='mt-5'>
+                                <input type='password'
+                                    placeholder='Confirm Password'
+                                    onChange={(e) => setMatchPwd(e.target.value)}
+                                    value={matchPwd}
+                                    className='border border-gray-400 py-1 px-2 w-full rounded-sm' />
 
+                                <p className={matchPwd && !validMatch ? "instructions" : "offscreen"}>
 
+                                    Must match the first password input field.
+                                </p>
+                            </div>
                             <div class="mt-5">
                                 <input type="checkbox" required className="border border-gray-400" />
                                 <span>
@@ -148,12 +197,9 @@ const Register = () => {
                                 <button class="w-full bg-purple-500 py-3 text-center text-white">Register Now</button>
                             </div>
 
-                            <div className="text-center py-2 text-gray-500">
-                             Don't have an account yet? <Link className="underline text-black" to={'/register'}>Register now</Link>
-                            </div>
-                        
+
                         </form>
-                       
+                        <p className='mt-2 text-center text-sm'> Already registered?<Link to ="/login">Login here</Link></p>
                     </div>
 
                 </div>
