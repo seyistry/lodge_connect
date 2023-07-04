@@ -7,8 +7,24 @@ const errorFormatter = ({ msg }) => {
     return msg;
 };
 
+export const registerValidator = async (req, res, next) => {
+  await Promise.all([
+    body('first_name', 'First Name is required').trim().notEmpty().run(req),
+    body('last_name', 'Last Name is required').trim().notEmpty().run(req),
+    body('email', 'Invalid email format').trim().isEmail().run(req),
+    body('password', 'Password must be at least 4 characters').trim().isLength({ min: 4 }).run(req),
+    body('phone_number', 'Phone number is required').trim().notEmpty().run(req),
+  ]);
+  const errors = validationResult(req).formatWith(errorFormatter);
+	if (!errors.isEmpty()) {
+		return errorResponse(res, errors.array().join(", "), StatusCodes.BAD_REQUEST);
+	}
+
+  next();
+};
+
 export const loginValidator = async (req, res, next) => {
-	const emailCheck = body("email", "Your email is not valid")
+	const emailCheck = body("email", "Invalid email format")
 		.isEmail()
 		.normalizeEmail()
 		.run(req);
