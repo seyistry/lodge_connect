@@ -1,7 +1,7 @@
 import User from '../models/user.model.js';
 import tryCatchHelper from '../utils/helpers/tryCatch.helper.js';
-import { addCookiesToResponse, createTokenUser } from '../utils/session/jwt.js';
 import { StatusCodes } from 'http-status-codes';
+import jwt from 'jsonwebtoken';
 
 export const registerUser = tryCatchHelper(async (req, res) => {
   const { first_name, last_name, email, password, phone_number } = req.body;
@@ -21,10 +21,12 @@ export const registerUser = tryCatchHelper(async (req, res) => {
 
   await user.save();
 
-  const tokenUser = createTokenUser(user);
-  addCookiesToResponse({ res, user: tokenUser });
+  // Generate token for created user
+  const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: process.env.DURATION,
+  });
 
-  res.status(StatusCodes.CREATED).json({ user: tokenUser });
+  res.status(StatusCodes.CREATED).json({ user, token });
 });
 
 export const userLogin = tryCatchHelper(async (req, res) => {
