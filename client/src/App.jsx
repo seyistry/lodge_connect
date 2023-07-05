@@ -1,7 +1,9 @@
 import Register from "./pages/Register";
 import { Route,Routes } from "react-router-dom";
-import Login from "./pages/Login";
+
 import { UserContextProvider } from "./pages/UserContext";
+import AccountPage from "./pages/AccountPage";
+import Logins from "./pages/Logins";
 
 
 function App() {
@@ -9,7 +11,9 @@ function App() {
     <UserContextProvider>
     <Routes>
     <Route path="/register" element={<Register />} />
-    <Route path="/login" element={<Login />} />
+    <Route path="/login" element={<Logins />} />
+ 
+    <Route path="/account" element={<AccountPage />} />
 
     </Routes>
     
