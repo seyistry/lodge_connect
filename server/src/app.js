@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // mount routes
-app.use(authRouter);
+app.use("/lodge-connect/user",authRouter);
 
 // index route
 app.get('/', (req, res) => {
