@@ -24,7 +24,7 @@ export default function Hero() {
             type="text"
             name=""
             id=""
-            className="transparent outline-none  h-10 py-4 pl-4 w-[70%]"
+            className="transparent outline-none focus:ring-0  h-10 py-4 pl-4 w-[70%]"
             placeholder="Search by Address, City, Street, ZIP"
           />
           <button
