@@ -1,4 +1,4 @@
-import logo from '../assets/images/logo.png'
+import logo from '../assets/images/logo.png';
 export default function LoginPage() {
   return (
     <>
@@ -12,11 +12,7 @@ export default function LoginPage() {
 		*/}
       <div className="flex h-[90vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-10 w-auto"
-            src={logo}
-            alt="Your Company"
-          />
+          <img className="mx-auto h-10 w-auto" src={logo} alt="Your Company" />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-brandText-500">
             Sign in to your account
           </h2>
@@ -54,7 +50,7 @@ export default function LoginPage() {
                 <div className="text-sm">
                   <a
                     href="#"
-                    className="font-semibold text-brandText-100 hover:text-brand-500"
+                    className="font-semibold text-sm text-brand-500"
                   >
                     Forgot password?
                   </a>
@@ -81,6 +77,15 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
+          <p className="mt-10 text-center text-sm text-gray-500">
+            Not a member?{' '}
+            <a
+              href="#"
+              className="font-semibold leading-6 text-brand-500 hover:text-indigo-500"
+            >
+              Sign up
+            </a>
+          </p>
         </div>
       </div>
     </>
