@@ -1,10 +1,11 @@
 import LandingPage from './pages/LandingPage';
+import ProductPage from './pages/ProductPage';
 
 function App() {
   return (
-    <>
-      <LandingPage />
-    </>
+    <div className="bg-brand-100">
+      <ProductPage />
+    </div>
   );
 }
 
