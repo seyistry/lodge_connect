@@ -24,12 +24,12 @@ export const registerUser = tryCatch(async (req, res) => {
   await user.save();
 
   // Generate token for created user
-  const token = generateJwtToken({ userId: user._id }, "24h");
+  const token = generateJwtToken({ userId: user._id }, '24h');
 
   return successResponse(
     res,
     'User created successfully',
-    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email }, token },
+    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email, userId: user._id }, token },
     StatusCodes.CREATED
   );
 });
@@ -52,12 +52,12 @@ export const userLogin = tryCatch(async (req, res) => {
   }
 
   //   create token to validate the user if the user exists
-  const token = generateJwtToken({ userId: user._id }, "24h");
+  const token = generateJwtToken({ userId: user._id }, '24h');
 
   return successResponse(
     res,
     'Login successful',
-    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email }, token },
+    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email, userId: user._id }, token },
     StatusCodes.OK
   );
 });
@@ -67,12 +67,10 @@ export const logoutUser = (req, res) => {
   return successResponse(res, 'Logout successful', {});
 };
 
-
-export const getUserProfile = tryCatch(async(req, res) => {
+export const getUserProfile = tryCatch(async (req, res) => {
   const { userId } = req;
   // find the user by id
   const user = await User.findById(userId);
-
   if (!user) {
     throw new AppError("User not found", StatusCodes.NOT_FOUND);
   }
