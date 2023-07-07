@@ -73,5 +73,42 @@ export const getUserProfile = tryCatch(async(req, res) => {
   // find the user by id
   const user = await User.findById(userId);
 
+  if (!user) {
+    throw new AppError("User not found", StatusCodes.NOT_FOUND);
+  }
+
   return successResponse(res, "User profile retrieved", { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email }} );
+})
+
+export const updateUserProfile = tryCatch(async(req, res) => {
+	const { userId } = req;
+	// find the user by id
+	const user = await User.findById(userId);
+
+	if (!user) {
+		throw new AppError("User not found", StatusCodes.NOT_FOUND);
+	}
+
+  const update = {};
+  const allowedProps = ['first_name', 'last_name', 'email', 'phone_number']
+  for (const prop in req.body) {
+    if(Object.prototype.hasOwnProperty.call(req.body, prop) && allowedProps.includes(prop) && req.body[prop]) {
+      update[prop] = req.body[prop]
+    }
+  }
+  await User.findByIdAndUpdate(userId, update)
+  return successResponse(res, "User updated successfully", {});
+})
+
+export const deleteUserProfile = tryCatch(async(req, res) => {
+  const { userId } = req;
+  // find the user by id
+  const user = await User.findById(userId);
+
+  if (!user) {
+		throw new AppError("User not found", StatusCodes.NOT_FOUND);
+  }
+  await User.findByIdAndDelete(userId)
+  return successResponse(res, "User deleted successfully", {});
+
 })
