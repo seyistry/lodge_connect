@@ -78,6 +78,16 @@ export const updateApartment = tryCatch(async (req, res) => {
   successResponse(res, 'Apartment has been updated', { apartment }, StatusCodes.OK);
 });
 
+// controller to delete an apartment
 export const removeApartment = tryCatch(async (req, res) => {
-  res.send('Delete controller');
+  const { apartmentId } = req.params;
+
+  const apartment = await Apartment.findOne({ _id: apartmentId });
+
+  // Check if the user id === the owner ID property in the apartment
+  checkPermissions(req.userId, apartment.owner);
+
+  await apartment.deleteOne();
+
+  successResponse(res, 'Apartment has been deleted');
 });
