@@ -1,93 +1,106 @@
+import './reg.css';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import logo from '../assets/images/logo.png';
+import { Link } from 'react-router-dom';
+
+const schema = yup
+  .object({
+    email: yup.string().email().required('Valid email is required'),
+    password: yup
+      .string()
+      .min(6)
+      .required('password is required with minimum length of 6'),
+  })
+  .required();
+
 export default function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
+
   return (
-    <>
-      {/*
-		  This example requires updating your template:
-  
-		  ```
-		  <html class="h-full bg-white">
-		  <body class="h-full">
-		  ```
-		*/}
-      <div className="flex h-[90vh] flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mx-auto h-10 w-auto" src={logo} alt="Your Company" />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-brandText-500">
-            Sign in to your account
-          </h2>
-        </div>
+    <div className="w-full h-[100vh] flex items-center bg-gradient-to-b from-gray-800 to-black">
+      <div className="container mx-auto">
+        <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
+          {/* style the left image */}
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-12 bg-no-repeat bg-cover bg-center bg-regback">
+            <img src={logo} alt="logo" />
+            <div className="mt-5">
+              <p className="text-brandText-500">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+                suspendisse aliquam varius rutrum purus maecenas ac{' '}
+                <a href="#" className="text-purple-500 font-semibold">
+                  Learn more
+                </a>
+              </p>
+            </div>
+          </div>
+          <div className=" w-full lg:w-1/2 py-12 px-10 ">
+            <h2 className="font-bold text-2xl mb-4 text-brandText-500">
+              Login
+            </h2>
+            <p className="mb-4 text-brandText-500">
+              Create your account. It's free and only take a minute
+            </p>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-brandText-100"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
+            {/* create the input forms */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-4">
                 <input
-                  id="email"
-                  name="email"
                   type="email"
-                  autoComplete="email"
-                  required
-                  className="block w-full rounded-md px-4 border-0 py-1.5 text-[gray] shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-[gray] focus:ring-2 focus:ring-inset focus:ring-brand-500 sm:text-sm sm:leading-6"
+                  placeholder="Email"
+                  {...register('email', {})}
+                  className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
+                {errors.email && (
+                  <p className="text-sm text-[red]">
+                    {errors.email?.message}
+                  </p>
+                )}
               </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-brandText-100"
-                >
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-sm text-brand-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
+              <div className="mb-4">
                 <input
-                  id="password"
-                  name="password"
                   type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full px-4 rounded-md border-0 py-1.5 text-[gray] shadow-sm ring-1 ring-inset placeholder:text-[gray] focus:ring-2 focus:ring-inset focus:ring-brand-500 sm:text-sm sm:leading-6"
+                  placeholder="Password"
+                  {...register('password', {})}
+                  className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
+                {errors.password && (
+                  <p className="text-sm text-[red]">
+                    {errors.password?.message}
+                  </p>
+                )}
               </div>
-            </div>
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-brand-500 px-3 py-1.5 text-sm font-semibold leading-6 text-[white] shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?{' '}
-            <a
-              href="#"
-              className="font-semibold leading-6 text-brand-500 hover:text-indigo-500"
-            >
-              Sign up
-            </a>
-          </p>
+              <div className="mt-5 flex justify-center">
+                <button
+                  type="submit"
+                  className=" bg-brand-500 rounded-full py-2 px-6 font-bold text-[white]"
+                >
+                  Login Now
+                </button>
+              </div>
+
+              <p className="text-center text-sm mt-2 text-brandText-500 italic">
+                Don't have an account yet?{' '}
+                <Link to={'/register'}>
+                  <span className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic">
+                    Register now
+                  </span>
+                </Link>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
