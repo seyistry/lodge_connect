@@ -1,13 +1,28 @@
 import Apartment from '../models/apartment.model.js';
 import AppError from '../utils/libs/appError.js';
 import tryCatch from '../utils/helpers/tryCatch.helper.js';
-import { checkPermissions } from '../utils/helpers/checkPermissions.helper.js';
+import { checkPermissions } from '../utils/helpers/utilFunctions.helper.js';
 import { successResponse } from '../utils/libs/response.js';
 import { StatusCodes } from 'http-status-codes';
 
 // controller to fetch all the apartments in the database
 export const getAllApartments = tryCatch(async (req, res) => {
-  const apartments = await Apartment.find({});
+  // search filter by location and title
+  const { location, title } = req.query;
+  const queryObject = {};
+
+  if (location) {
+    queryObject.location = { $regex: location, $options: 'i' };
+  }
+  if (title) {
+    queryObject.title = { $regex: title, $options: 'i' };
+  }
+
+  // implementing pagination to limit returned apartments to 5 per page
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 5;
+  const skip = (page - 1) * limit;
+  const apartments = await Apartment.find(queryObject).skip(skip).limit(limit);
 
   successResponse(res, `Count: ${apartments.length} apartment(s)`, { apartments }, StatusCodes.OK);
 });
@@ -49,6 +64,11 @@ export const postApartment = tryCatch(async (req, res) => {
     owner,
   });
 
+  // apartment.image = req.files.map((el) => ({
+  //   url: el.path,
+  //   filename: el.filename,
+  // }));
+
   await apartment.save();
 
   successResponse(res, 'Apartment successfully created', { apartment }, StatusCodes.CREATED);
@@ -83,6 +103,10 @@ export const removeApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
 
   const apartment = await Apartment.findOne({ _id: apartmentId });
+
+  if (!apartment) {
+    throw new AppError('This apartment does not exist', StatusCodes.NOT_FOUND);
+  }
 
   // Check if the user id === the owner ID property in the apartment
   checkPermissions(req.userId, apartment.owner);
