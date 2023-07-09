@@ -1,17 +1,28 @@
 import User from '../models/user.model.js';
+import UserAuth from '../models/userAuth.model.js';
+import { sendEmail } from '../services/email.service.js';
+import { comparePassword, hashPassword } from '../utils/helpers/bcrypt.helper.js';
+import dateHelper from '../utils/helpers/date.helper.js';
 import { generateJwtToken } from '../utils/helpers/jwt.helper.js';
 import tryCatch from '../utils/helpers/tryCatch.helper.js';
 import AppError from '../utils/libs/appError.js';
+import { otpGenerator } from '../utils/libs/keyGenerator.js';
 import { successResponse } from '../utils/libs/response.js';
 import { StatusCodes } from 'http-status-codes';
 
 export const registerUser = tryCatch(async (req, res) => {
-  const { first_name, last_name, email, password, phone_number } = req.body;
+  const { first_name, last_name, email, password, phone_number, confirm_password } = req.body;
   const emailExists = await User.findOne({ email });
 
   if (emailExists) {
     throw new AppError('Email already exists', StatusCodes.CONFLICT);
   }
+
+  if (password !== confirm_password) {
+    throw new AppError('Password does not match', StatusCodes.BAD_REQUEST);
+  }
+
+  const hashedPassword = await hashPassword(password);
 
   const user = new User({
     first_name,
@@ -23,16 +34,79 @@ export const registerUser = tryCatch(async (req, res) => {
 
   await user.save();
 
-  // Generate token for created user
-  const token = generateJwtToken({ userId: user._id }, '24h');
+  // Generate OTP
+  const otp = otpGenerator()
+
+  // set the expiration time to 5minutes for the OTP
+  const otpExpiration = dateHelper.addMinutes(5);
+
+  // save the OTP and expiration time in the database
+  await UserAuth.create({
+    userId: user._id,
+    otp,
+    expiredAt: otpExpiration
+  })
+
+  // send the OTP to the user's email address
+  await sendEmail(
+      user.email,
+      "Verify Your Email Address",
+      `<h1>Welcome to Lodge Connect!!!</h1>
+      <p>Please use the following OTP to verify your email address</p>`
+    )
 
   return successResponse(
     res,
     'User created successfully',
-    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email, userId: user._id }, token },
+    { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email, userId: user._id } },
     StatusCodes.CREATED
   );
 });
+
+export const verifyEmail = tryCatch(async(req, res) => {
+  const { otp } = req.body
+  const userOtp = await UserAuth.findOne({otp});
+
+  if (!userOtp) {
+    throw new AppError("Invalid OTP, please try again", StatusCodes.BAD_REQUEST)
+  }
+  if (userOtp && dateHelper.expiredDate(userOtp.expiredAt)) {
+    userOtp.status = "expired";
+    await userOtp.save();
+    throw new AppError("OTP has expired, please request for a new one", StatusCodes.BAD_REQUEST)
+  }
+  userOtp.status = "validated";
+  await otp.save();
+  await User.findByIdAndUpdate(userOtp.userId, { verified: true });
+
+  // Generate token for created user
+  const token = generateJwtToken({ userId: userOtp._id }, '24h');
+
+  return successResponse(res, "Your Email has been verified successfully", { data: { token } });
+})
+
+export const resendOtp = tryCatch(async(req, res) =>{
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) throw new AppError("User not found", StatusCodes.NOT_FOUND)
+
+  // check if the user is already verified
+  if(user.verified) throw new AppError("User is already verified", StatusCodes.CONFLICT)
+
+  const otp = otpGenerator();
+  const otpExpiration = dateHelper.addMinutes(5)
+
+  await UserAuth.findOneAndUpdate({ userId: user._id }, { otp, expiredAt: otpExpiration})
+
+  sendEmail(
+    user.email,
+    "Email Verification - Resend OTP",
+    `<h1>Your new OTP for email verification is: ${otp}</h1>`
+  )
+
+  return successResponse(res, "A new OTP has been sent to your email address", {})
+})
 
 export const userLogin = tryCatch(async (req, res) => {
   const { email, password } = req.body;
@@ -46,10 +120,33 @@ export const userLogin = tryCatch(async (req, res) => {
   }
 
   // retrieve password from the database and compare with entered password
-  const validatePassword = await user.comparePassword(password);
+  const validatePassword = await comparePassword(password, user.password)
   if (!validatePassword) {
     throw new AppError('Invalid Email or Password. Please try again.', StatusCodes.UNAUTHORIZED);
   }
+
+  if (!user.verified) {
+		// Generate a new OTP
+		const otp = otpGenerator();
+		const otpExpiration = dateHelper.addMinutes(5); // Set OTP expiration time to 5 minutes
+
+		// Save the new OTP in the database
+		await UserAuth.findOneAndUpdate(
+			{ userId: user._id },
+			{
+				otp,
+				expiredAt: otpExpiration,
+			}
+		);
+
+		// Send the new OTP to the user's email
+		sendEmail(
+			user.email,
+			"Email Verification - Resend OTP",
+			`<h1>Kindly verify your email with this OTP: ${otp}</h1>`
+		);
+		return errorResponse(res, "Kindly verify your email with the OTP sent to your email address", StatusCodes.BAD_REQUEST)
+	}
 
   //   create token to validate the user if the user exists
   const token = generateJwtToken({ userId: user._id }, '24h');
