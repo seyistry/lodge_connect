@@ -7,8 +7,8 @@ import { StatusCodes } from 'http-status-codes';
 
 // controller to fetch all the apartments in the database
 export const getAllApartments = tryCatch(async (req, res) => {
-  // search filter by location and title
-  const { location, title } = req.query;
+  // search filter parameters
+  const { location, title, numberFilters } = req.query;
   const queryObject = {};
 
   if (location) {
@@ -16,6 +16,29 @@ export const getAllApartments = tryCatch(async (req, res) => {
   }
   if (title) {
     queryObject.title = { $regex: title, $options: 'i' };
+  }
+
+  // Logic for numeric filters
+  if (numberFilters) {
+    // mapping the operators to the mongoose operators
+    const operatorMap = {
+      '>': '$gt',
+      '>=': '$gte',
+      '=': '$eq',
+      '<': '$lt',
+      '<=': '$lte',
+    };
+
+    // setting up a regular expression and replacing the operators with the mongoose operators
+    const regExp = /\b(<|>|>=|=|<|<=)\b/g;
+    let filters = numberFilters.replace(regExp, (match) => `-${operatorMap[match]}-`); // output: price-$gt-30000 or price-$gt-30000,bedrooms-$lte-3
+    const options = ['price', 'bedrooms', 'bathrooms']; //fields in the apartment schema that are numeric
+    filters = filters.split(',').forEach((item) => {
+      const [field, operator, value] = item.split('-');
+      if (options.includes(field)) {
+        queryObject[field] = { [operator]: Number(value) }; //output: { price: { '$gt': 30000 } } or { price: { '$gt': 30000 }, bedrooms: { '$lte': 3 } }
+      }
+    });
   }
 
   // implementing pagination to limit returned apartments to 5 per page
