@@ -28,7 +28,7 @@ export const registerUser = tryCatch(async (req, res) => {
     first_name,
     last_name,
     email,
-    password,
+    password: hashedPassword,
     phone_number,
   });
 
@@ -52,7 +52,7 @@ export const registerUser = tryCatch(async (req, res) => {
       user.email,
       "Verify Your Email Address",
       `<h1>Welcome to Lodge Connect!!!</h1>
-      <p>Please use the following OTP to verify your email address</p>`
+      <p>Please use the following OTP to verify your email address: ${otp}</p>`
     )
 
   return successResponse(
@@ -159,10 +159,77 @@ export const userLogin = tryCatch(async (req, res) => {
   );
 });
 
-export const logoutUser = (req, res) => {
-  req.session.destroy();
-  return successResponse(res, 'Logout successful', {});
-};
+export const forgotPassword = tryCatch(async (req, res, next) => {
+	const { email } = req.body;
+	const user = await User.findOne({ email });
+	if (!user) throw new AppError("User not found", StatusCodes.NOT_FOUND);
+
+	const resetOtp = otpGenerator(); // Generate OTP code
+	const otpExpiration = dateHelper.addMinutes(2); // Set OTP expiration time to 2 minutes
+
+	// Save to the User Auth
+	await UserAuth.create({
+		userId: user._id,
+		otp: resetOtp,
+		expiredAt: otpExpiration,
+	});
+
+	// Prepare email content
+	const emailSubject = "Password Reset";
+	const emailBody = `<h1>Password Reset</h1>
+    <p>Your password reset OTP: ${resetOtp}</p>`
+	await sendEmail(user.email, emailSubject, emailBody); // Send email
+	return successResponse(
+		res,
+		"Password reset email sent successfully",
+	);
+});
+
+export const verifyResetPassword = tryCatch(async (req, res, next) => {
+	const { resetOtp } = req.body;
+	const otp = await UserAuth.findOne({ otp: resetOtp });
+	if (!otp) {
+    throw new AppError("Invalid OTP, please try again", StatusCodes.BAD_REQUEST)
+	}
+	if (otp && dateHelper.expiredDate(otp.expiredAt)) {
+		otp.status = "expired";
+		await otp.save();
+		throw new AppError("Your OTP is expired, please request a new one")
+	}
+	otp.status = "validated";
+	await otp.save();
+	const token = generateJwtToken({ userId: otp.userId }, "30m"); // Generate JWT token to validate the user
+
+	return successResponse(res, "Reset OTP verified successfully", { token });
+});
+
+export const resetPassword = tryCatch(async(req, res) => {
+  const { new_password, confirm_password } = req.body;
+  const { userId } = req;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("User not found", StatusCodes.NOT_FOUND);
+  }
+  const passwordCheck = await comparePassword(new_password, user.password);
+  if (passwordCheck) throw new AppError("New password cannot be the same as the old one", StatusCodes.BAD_REQUEST)
+
+  if (new_password !== confirm_password) throw new AppError("Passwords do not match", StatusCodes.BAD_REQUEST)
+
+  const hashedPassword = await hashPassword(new_password);
+
+  user.password = hashedPassword
+  user.save();
+
+  sendEmail(
+    user.email,
+    "Password Reset Successful",
+    `<h1>Password Reset Successful</h1>
+    <p>Your password has been reset successfully. Please use your new password to log in.</p>
+    `
+  )
+
+  return successResponse(res, "Password Reset Successful", {})
+})
 
 export const getUserProfile = tryCatch(async (req, res) => {
   const { userId } = req;
@@ -171,7 +238,7 @@ export const getUserProfile = tryCatch(async (req, res) => {
   if (!user) {
     throw new AppError("User not found", StatusCodes.NOT_FOUND);
   }
-
+  
   return successResponse(res, "User profile retrieved", { user: { fullName: `${user.first_name} ${user.last_name}`, email: user.email }} );
 })
 
@@ -179,7 +246,7 @@ export const updateUserProfile = tryCatch(async(req, res) => {
 	const { userId } = req;
 	// find the user by id
 	const user = await User.findById(userId);
-
+  
 	if (!user) {
 		throw new AppError("User not found", StatusCodes.NOT_FOUND);
 	}
@@ -195,15 +262,35 @@ export const updateUserProfile = tryCatch(async(req, res) => {
   return successResponse(res, "User updated successfully", {});
 })
 
+export const changePassword = tryCatch(async(req, res) => {
+  const { old_password, new_password, confirm_password } = req.body
+  const { userId } = req;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError("User not found", StatusCodes.NOT_FOUND);
+  }
+  const passwordCheck = await comparePassword(old_password, user.password);
+  if (passwordCheck) throw new AppError("Old Password is incorrect", StatusCodes.BAD_REQUEST)
+
+  if (old_password === new_password) throw new AppError("New password cannot be the same as the old one", StatusCodes.BAD_REQUEST)
+
+  if (new_password !== confirm_password) throw new AppError("Passwords do not match", StatusCodes.BAD_REQUEST)
+
+  const hashedPassword = await hashPassword(new_password);
+
+  user.password = hashedPassword
+  user.save();
+})
+
 export const deleteUserProfile = tryCatch(async(req, res) => {
   const { userId } = req;
   // find the user by id
   const user = await User.findById(userId);
-
+  
   if (!user) {
 		throw new AppError("User not found", StatusCodes.NOT_FOUND);
   }
   await User.findByIdAndDelete(userId)
   return successResponse(res, "User deleted successfully", {});
-
+  
 })
