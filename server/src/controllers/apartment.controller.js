@@ -47,7 +47,7 @@ export const getSingleApartment = tryCatch(async (req, res) => {
   successResponse(res, 'Apartment found', { apartment }, StatusCodes.OK);
 });
 
-// controller to create a new aparment and save to the database
+// controller to create a new apartment and save to the database
 export const postApartment = tryCatch(async (req, res) => {
   req.body.owner = req.userId;
   const { image, title, description, price, location, bedrooms, bathrooms, owner } = req.body;
@@ -76,7 +76,7 @@ export const postApartment = tryCatch(async (req, res) => {
 
 export const updateApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
-  const { image, title, description, price, location, bedrooms, bathrooms } = req.body;
+  const allowedProps = [ "image", "title", "description", "price", "location", "bedrooms", "bathrooms" ]
 
   // Find the apartment by ID from the database
   const apartment = await Apartment.findOne({ _id: apartmentId });
@@ -85,14 +85,11 @@ export const updateApartment = tryCatch(async (req, res) => {
   checkPermissions(req.userId, apartment.owner);
 
   // Update the data in the database
-  apartment.image = image;
-  apartment.title = title;
-  apartment.description = description;
-  apartment.price = price;
-  apartment.location = location;
-  apartment.bedrooms = bedrooms;
-  apartment.bathrooms = bathrooms;
-
+  for (const prop in req.body) {
+    if (allowedProps.includes(prop)) {
+      apartment[prop] = req.body[prop];
+    }
+  }
   await apartment.save();
 
   successResponse(res, 'Apartment has been updated', { apartment }, StatusCodes.OK);

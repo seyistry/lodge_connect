@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // mount routes
-app.use('/lodge-connect', apartmentRouter);
+app.use("/lodge-connect/apartment", apartmentRouter);
 app.use('/lodge-connect/user', authRouter);
 
 // index route
