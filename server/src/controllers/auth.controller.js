@@ -145,7 +145,7 @@ export const userLogin = tryCatch(async (req, res) => {
 			"Email Verification - Resend OTP",
 			`<h1>Kindly verify your email with this OTP: ${otp}</h1>`
 		);
-		return errorResponse(res, "Kindly verify your email with the OTP sent to your email address", StatusCodes.BAD_REQUEST)
+		throw new AppError("Kindly verify your email with the OTP sent to your email address", StatusCodes.BAD_REQUEST)
 	}
 
   //   create token to validate the user if the user exists
