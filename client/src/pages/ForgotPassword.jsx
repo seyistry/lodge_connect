@@ -3,12 +3,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import logo from '../assets/images/logo.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { base_url } from '../utils/apiLinks';
+import { Link } from 'react-router-dom';
 
 const schema = yup
   .object({
-    otp: yup.string().required('Verification code is required'),
+    verifyCode: yup.string().required('Verification code is required'),
   })
   .required();
 
@@ -20,28 +19,8 @@ export default function VerificationPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const navigate = useNavigate();
-
-  const onSubmit = async (data) => {
-    try {
-      await fetch(`${base_url}/lodge-connect/user/resend-otp`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-      }).then((response) => {
-        response.json().then((data) => {
-          navigate('/');
-        });
-      });
-    } catch (error) {
-      console.error(error);
-    }
-
-    // let data = await response.text();
-    // console.log(data);
-  };
-
-  // console.log(errors);
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
 
   return (
     <div className="w-full h-[100vh] flex items-center bg-gradient-to-b from-gray-800 to-black">
@@ -74,11 +53,13 @@ export default function VerificationPage() {
                 <input
                   type="text"
                   placeholder="verification code"
-                  {...register('otp', {})}
+                  {...register('verifyCode', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.otp && (
-                  <p className="text-sm text-[red]">{errors.otp?.message}</p>
+                {errors.verifyCode && (
+                  <p className="text-sm text-[red]">
+                    {errors.verifyCode?.message}
+                  </p>
                 )}
               </div>
 
@@ -93,14 +74,12 @@ export default function VerificationPage() {
 
               <p className="text-center text-sm mt-2 text-brandText-500 italic">
                 make a request for a new code here{' '}
-                <Link to="/resend-otp">
-                  <button
-                    type="button"
-                    className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic"
-                  >
-                    request new code
-                  </button>
-                </Link>
+                <button
+                  type="button"
+                  className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic"
+                >
+                  request new code
+                </button>
               </p>
             </form>
           </div>

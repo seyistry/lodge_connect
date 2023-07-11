@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function ProductCard() {
   return (
     <div className="h-[320px] rounded-lg bg-[white] overflow-hidden">
@@ -41,12 +43,14 @@ export default function ProductCard() {
               John Doe
             </p>
           </div>
-          <button
-            type="button"
-            className="font-bold text-[10px] text-brandText-500 bg-[#F2F2F2] px-6 py-2 rounded-full hover:bg-brand-500 hover:text-[white]"
-          >
-            Contact Now
-          </button>
+          <Link to="/product">
+            <button
+              type="button"
+              className="font-bold text-[10px] text-brandText-500 bg-[#F2F2F2] px-6 py-2 rounded-full hover:bg-brand-500 hover:text-[white]"
+            >
+              Contact Now
+            </button>
+          </Link>
         </div>
       </div>
     </div>
