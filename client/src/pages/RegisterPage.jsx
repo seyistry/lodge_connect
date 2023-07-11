@@ -5,31 +5,46 @@ import * as yup from 'yup';
 import './reg.css';
 import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react';
+import { base_url } from '../utils/apiLinks';
 
 const schema = yup
   .object({
-    firstName: yup
+    first_name: yup
       .string()
       .min(3)
       .required('First name is required with minimum length of 3'),
-    lastName: yup
+    last_name: yup
       .string()
       .min(3)
       .required('Last name is required with minimum length of 3'),
     email: yup.string().email().required('Valid email is required'),
-    address: yup.string().min(6).required('Address is required'),
+    phone_number: yup.string().matches(/^[0]\d{10}$/, {
+      message: 'Please enter valid phone number.',
+      excludeEmptyString: false,
+    }),
     password: yup
       .string()
       .min(6)
       .required('password is required with minimum length of 6'),
-    confirmPassword: yup
+    confirm_password: yup
       .string()
       .required()
       .oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    agreed: yup
+      .boolean()
+      .oneOf([true], 'click you accept the terms and conditions'),
   })
   .required();
 
 const RegisterPage = () => {
+  let [isOpen, setIsOpen] = useState(false);
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   const {
     register,
     handleSubmit,
@@ -37,11 +52,89 @@ const RegisterPage = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+
+  const onSubmit = async (data) => {
+    try {
+      await fetch(`${base_url}/lodge-connect/user/register`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+      }).then((response) => {
+        response.json().then((data) => {
+          if (data.message === 'User created successfully') {
+            setIsOpen(true);
+          } else {
+            console.log('error');
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    // let data = await response.text();
+    console.log(data);
+  };
+  // console.log(errors);
 
   return (
     <div className="w-full min-h-screen flex items-center  bg-gradient-to-b from-gray-800 to-black">
+      <Transition appear show={isOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-25" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="bg-[white] w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-medium leading-6 text-brandText-500"
+                  >
+                    Registration successful
+                  </Dialog.Title>
+                  <div className="mt-2">
+                    <p className="text-sm text-brandText-500">
+                      We've sent an OTP to your email.
+                    </p>
+                  </div>
+
+                  <div className="mt-4">
+                    <Link to="/verify">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center rounded-full border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-brand-500 hover:bg-brand-500 hover:text-[white] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                        onClick={closeModal}
+                      >
+                        Verify Email
+                      </button>
+                    </Link>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+            <dialog open>This is an open dialog window</dialog>
+          </div>
+        </Dialog>
+      </Transition>
       <div className="container mx-auto">
         <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
           {/* style the left image */}
@@ -71,13 +164,13 @@ const RegisterPage = () => {
                 <input
                   type="text"
                   placeholder="First Name"
-                  {...register('firstName', {})}
-                  aria-invalid={errors.firstName ? 'true' : 'false'}
+                  {...register('first_name', {})}
+                  aria-invalid={errors.first_name ? 'true' : 'false'}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.firstName && (
+                {errors.first_name && (
                   <p className="text-sm text-[red]">
-                    {errors.firstName?.message}
+                    {errors.first_name?.message}
                   </p>
                 )}
               </div>
@@ -85,12 +178,12 @@ const RegisterPage = () => {
                 <input
                   type="text"
                   placeholder="Last Name"
-                  {...register('lastName', {})}
+                  {...register('last_name', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.lastName && (
+                {errors.last_name && (
                   <p className="text-sm text-[red]">
-                    {errors.lastName?.message}
+                    {errors.last_name?.message}
                   </p>
                 )}
               </div>
@@ -108,14 +201,14 @@ const RegisterPage = () => {
               </div>
               <div className="mb-4">
                 <input
-                  type="text"
-                  placeholder="Address"
-                  {...register('address', {})}
+                  type="tel"
+                  placeholder="Phone Number"
+                  {...register('phone_number', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.address && (
+                {errors.phone_number && (
                   <p className="text-sm text-[red]">
-                    {errors.address?.message}
+                    {errors.phone_number?.message}
                   </p>
                 )}
               </div>
@@ -136,12 +229,12 @@ const RegisterPage = () => {
                 <input
                   type="password"
                   placeholder="Confirm Password"
-                  {...register('confirmPassword', {})}
+                  {...register('confirm_password', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.confirmPassword && (
+                {errors.confirm_password && (
                   <p className="text-sm text-[red]">
-                    {errors.confirmPassword?.message}
+                    {errors.confirm_password?.message}
                   </p>
                 )}
               </div>
@@ -162,6 +255,9 @@ const RegisterPage = () => {
                     Privacy Policy
                   </a>
                 </span>
+                {errors.agreed && (
+                  <p className="text-sm text-[red]">{errors.agreed?.message}</p>
+                )}
               </div>
               <div className="flex justify-center mt-5">
                 <button

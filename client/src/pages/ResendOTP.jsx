@@ -8,11 +8,11 @@ import { base_url } from '../utils/apiLinks';
 
 const schema = yup
   .object({
-    otp: yup.string().required('Verification code is required'),
+    email: yup.string().email().required('Valid email is required'),
   })
   .required();
 
-export default function VerificationPage() {
+export default function ResendOTP() {
   const {
     register,
     handleSubmit,
@@ -24,13 +24,13 @@ export default function VerificationPage() {
 
   const onSubmit = async (data) => {
     try {
-      await fetch(`${base_url}/lodge-connect/user/resend-otp`, {
+      await fetch(`${base_url}/lodge-connect/user/verify-email`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
       }).then((response) => {
         response.json().then((data) => {
-          navigate('/');
+          navigate('/verify');
         });
       });
     } catch (error) {
@@ -38,10 +38,10 @@ export default function VerificationPage() {
     }
 
     // let data = await response.text();
-    // console.log(data);
+    console.log(data);
   };
 
-  // console.log(errors);
+  console.log(errors);
 
   return (
     <div className="w-full h-[100vh] flex items-center bg-gradient-to-b from-gray-800 to-black">
@@ -74,11 +74,11 @@ export default function VerificationPage() {
                 <input
                   type="text"
                   placeholder="verification code"
-                  {...register('otp', {})}
+                  {...register('email', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.otp && (
-                  <p className="text-sm text-[red]">{errors.otp?.message}</p>
+                {errors.email && (
+                  <p className="text-sm text-[red]">{errors.email?.message}</p>
                 )}
               </div>
 
@@ -87,21 +87,9 @@ export default function VerificationPage() {
                   type="submit"
                   className=" bg-brand-500 rounded-full py-2 px-6 font-bold text-[white]"
                 >
-                  Verify
+                  Request OTP
                 </button>
               </div>
-
-              <p className="text-center text-sm mt-2 text-brandText-500 italic">
-                make a request for a new code here{' '}
-                <Link to="/resend-otp">
-                  <button
-                    type="button"
-                    className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic"
-                  >
-                    request new code
-                  </button>
-                </Link>
-              </p>
             </form>
           </div>
         </div>

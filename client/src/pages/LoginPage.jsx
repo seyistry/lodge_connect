@@ -3,7 +3,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import logo from '../assets/images/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { base_url } from '../utils/apiLinks';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../features/auth/user';
 
 const schema = yup
   .object({
@@ -16,6 +19,10 @@ const schema = yup
   .required();
 
 export default function LoginPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+
   const {
     register,
     handleSubmit,
@@ -23,8 +30,32 @@ export default function LoginPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
+  const onSubmit = async (data) => {
+    try {
+      await fetch(`${base_url}/lodge-connect/user/login`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+      }).then((response) => {
+        response.json().then((data) => {
+          if (data.message === 'Login successful') {
+            console.log('done');
+            console.log(data);
+            dispatch(addUser(data.payload));
+            navigate(state?.path || '/');
+          } else {
+            console.log(data.message);
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
+    // let data = await response.text();
+    console.log(data);
+  };
+  // console.log(errors);
 
   return (
     <div className="w-full h-[100vh] flex items-center bg-gradient-to-b from-gray-800 to-black">
@@ -61,9 +92,7 @@ export default function LoginPage() {
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
                 {errors.email && (
-                  <p className="text-sm text-[red]">
-                    {errors.email?.message}
-                  </p>
+                  <p className="text-sm text-[red]">{errors.email?.message}</p>
                 )}
               </div>
               <div className="mb-4">
@@ -91,7 +120,7 @@ export default function LoginPage() {
 
               <p className="text-center text-sm mt-2 text-brandText-500 italic">
                 Don't have an account yet?{' '}
-                <Link to={'/register'}>
+                <Link to={'/signup'}>
                   <span className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic">
                     Register now
                   </span>
