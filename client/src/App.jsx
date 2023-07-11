@@ -11,6 +11,11 @@ import RequireAuth from './pages/RequireAuth';
 export default function App() {
   return (
     <Routes>
+    <Route path="/register" element={<Register />} />
+    <Route path="/login" element={<Logins />} />
+    <Route path="/account/:subpage?" element={<AccountPage />} />
+
+    <Route path="/account/:subpage/:action" element={<AccountPage />} />
       <Route index element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<RegisterPage />} />
