@@ -76,7 +76,7 @@ export const verifyEmail = tryCatch(async(req, res) => {
     throw new AppError("OTP has expired, please request for a new one", StatusCodes.BAD_REQUEST)
   }
   userOtp.status = "validated";
-  await otp.save();
+  await userOtp.save();
   await User.findByIdAndUpdate(userOtp.userId, { verified: true });
 
   // Generate token for created user
@@ -145,7 +145,7 @@ export const userLogin = tryCatch(async (req, res) => {
 			"Email Verification - Resend OTP",
 			`<h1>Kindly verify your email with this OTP: ${otp}</h1>`
 		);
-		return errorResponse(res, "Kindly verify your email with the OTP sent to your email address", StatusCodes.BAD_REQUEST)
+		throw new AppError("Kindly verify your email with the OTP sent to your email address", StatusCodes.BAD_REQUEST)
 	}
 
   //   create token to validate the user if the user exists
@@ -186,19 +186,19 @@ export const forgotPassword = tryCatch(async (req, res, next) => {
 });
 
 export const verifyResetPassword = tryCatch(async (req, res, next) => {
-	const { resetOtp } = req.body;
-	const otp = await UserAuth.findOne({ otp: resetOtp });
-	if (!otp) {
-    throw new AppError("Invalid OTP, please try again", StatusCodes.BAD_REQUEST)
+	const { otp } = req.body;
+	const resetOtp = await UserAuth.findOne({ otp });
+	if (!resetOtp) {
+    throw new AppError("Invalid Otp, please try again", StatusCodes.BAD_REQUEST)
 	}
-	if (otp && dateHelper.expiredDate(otp.expiredAt)) {
-		otp.status = "expired";
-		await otp.save();
-		throw new AppError("Your OTP is expired, please request a new one")
+	if (resetOtp && dateHelper.expiredDate(resetOtp.expiredAt)) {
+		resetOtp.status = "expired";
+		await resetOtp.save();
+		throw new AppError("Your Otp is expired, please request a new one")
 	}
-	otp.status = "validated";
-	await otp.save();
-	const token = generateJwtToken({ userId: otp.userId }, "30m"); // Generate JWT token to validate the user
+	resetOtp.status = "validated";
+	await resetOtp.save();
+	const token = generateJwtToken({ userId: resetOtp.userId }, "30m"); // Generate JWT token to validate the user
 
 	return successResponse(res, "Reset OTP verified successfully", { token });
 });
@@ -270,7 +270,7 @@ export const changePassword = tryCatch(async(req, res) => {
     throw new AppError("User not found", StatusCodes.NOT_FOUND);
   }
   const passwordCheck = await comparePassword(old_password, user.password);
-  if (passwordCheck) throw new AppError("Old Password is incorrect", StatusCodes.BAD_REQUEST)
+  if (!passwordCheck) throw new AppError("Old Password is incorrect", StatusCodes.BAD_REQUEST)
 
   if (old_password === new_password) throw new AppError("New password cannot be the same as the old one", StatusCodes.BAD_REQUEST)
 
@@ -280,6 +280,7 @@ export const changePassword = tryCatch(async(req, res) => {
 
   user.password = hashedPassword
   user.save();
+  return successResponse(res, "Password changed successfully", {})
 })
 
 export const deleteUserProfile = tryCatch(async(req, res) => {

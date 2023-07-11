@@ -17,11 +17,11 @@ import {
   ownerDashboard,
 } from '../controllers/apartment.controller.js';
 
-router.get('/apartments', getAllApartments);
-router.get('/my-apartments', userAuth, ownerDashboard);
-router.post('/apartment', userAuth, /*upload.array('image'),*/ postApartment);
-router.get('/apartment/:apartmentId', getSingleApartment);
-router.patch('/apartment/:apartmentId', /*userAuth, upload.array('image'),*/ updateApartment);
-router.delete('/apartment/:apartmentId', userAuth, removeApartment);
+router.get('/all', getAllApartments);
+router.get('/', userAuth, ownerDashboard);
+router.post('/', userAuth, /*upload.array('image'),*/ postApartment);
+router.get('/:apartmentId', getSingleApartment);
+router.put('/:apartmentId', userAuth, /*upload.array('image'),*/ updateApartment);
+router.delete('/:apartmentId', userAuth, removeApartment);
 
 export default router;
