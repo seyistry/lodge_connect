@@ -13,7 +13,10 @@ function App() {
     <Route path="/register" element={<Register />} />
     <Route path="/login" element={<Logins />} />
  
-    <Route path="/account" element={<AccountPage />} />
+    {/* <Route path="/account" element={<AccountPage />} /> */}
+    <Route path="/account/:subpage?" element={<AccountPage />} />
+
+    <Route path="/account/:subpage/:action" element={<AccountPage />} />
 
     </Routes>
     

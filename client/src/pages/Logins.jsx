@@ -1,17 +1,20 @@
 import React, { useContext } from 'react'
 import { useRef, useState, useEffect } from "react";
 import "./reg.css"
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { userContext } from './UserContext';
+import {users} from "./data.js"
+// import { data } from 'autoprefixer';
 
 
 const Logins = () => {
-       const {setUser} = useContext(userContext)
+       const {user,setUser} = useContext(userContext)
+      
 
 
     // stating the useSates for input fields
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('')
     // const [validName, setValidName] = useState(false);
     
 
@@ -22,45 +25,58 @@ const Logins = () => {
     const [success, setSuccess] = useState(false);
     const [redirect, sectRedirect] =useState(false)
    
-   
+  
 
     // useEffect(() => {
     //     setErrMsg('');
     // }, [email, pwd])
+    useEffect(()=>{
+        const userE = users.filter(items =>  items.email === email)
+        setUser(userE[0])
+        },
+        [email])
 
-    const handleLoginSubmit = async (e) => {
+    const handleLoginSubmit =  (e) => {
         e.preventDefault();
-        try {
-            const data = await axios.post("/",
-                JSON.stringify({ email, pwd: password}),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
-            setUser(data)
-            console.log(response?.data);
-            console.log(response?.accessToken);
-            console.log(JSON.stringify(response))
-            setSuccess(true);
-            sectRedirect(true)
-            //clear state and controlled inputs
-            //need value attrib on inputs for this
+        try{
+        
+        //     const data = await axios.post("/",
+        //         JSON.stringify({ email, pwd: password}),
+        //         {
+        //             headers: { 'Content-Type': 'application/json' },
+        //             withCredentials: true
+        //         }
+        //     );
+       
+        //     console.log(response?.name);
+        //     console.log(response?.accessToken);
+        //     console.log(JSON.stringify(response))
+        //     setSuccess(true);
+        //     sectRedirect(true)
+        //     //clear state and controlled inputs
+        //     //need value attrib on inputs for this
+        
+        // setUser(userE)
+//    console.log(userE)
+
+
+
+console.log(user)
+
+console.log(typeof(user))
+console.log(`user in even ${user.email}`)
+        }catch(err){console.log(err)}
+
+    }
+   
+console.log(user)
+    // if(user){
+      
             
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else {
-                setErrMsg('Login Failed')
-            }
-            errRef.current.focus();
-        }
-
-    }
-
-    if(redirect){
-        return <Navigate to ={"/"} />
-    }
+    //         return    <Navigate to ={"/account"} />
+          
+    // }
+ 
 
   return (
     <div className="w-full min-h-screen py-40 bg-gradient-to-b from-gray-800 to-black">
