@@ -10,6 +10,7 @@ const apartmentSchema = new Schema(
     bedrooms: { type: Number, required: true },
     bathrooms: { type: Number, required: true },
     owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
   },
   { timestamps: true }
 );
