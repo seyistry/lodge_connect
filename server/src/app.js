@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/lodge-connect/user', authRouter);
 app.use('/lodge-connect/apartment', apartmentRouter);
 app.use('/lodge-connect/favorite', favoritesRouter);
-app.use('lodge-connect/apartment/:apartmentId/reviews', reviewsRouter);
+app.use('/lodge-connect/apartment/:apartmentId/reviews', reviewsRouter);
 
 // index route
 app.get('/', (req, res) => {

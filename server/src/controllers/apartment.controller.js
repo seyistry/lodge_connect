@@ -61,7 +61,13 @@ export const ownerDashboard = tryCatch(async (req, res) => {
 // controller to fetch a single apartment
 export const getSingleApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
-  const apartment = await Apartment.findOne({ _id: apartmentId });
+  const apartment = await Apartment.findOne({ _id: apartmentId }).populate({
+    path: 'reviews',
+    populate: {
+      path: 'user',
+      select: 'first_name last_name',
+    },
+  });
 
   if (!apartment) {
     throw new AppError('This apartment does not exist.', StatusCodes.NOT_FOUND);
@@ -99,7 +105,7 @@ export const postApartment = tryCatch(async (req, res) => {
 
 export const updateApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
-  const allowedProps = [ "image", "title", "description", "price", "location", "bedrooms", "bathrooms" ]
+  const allowedProps = ['image', 'title', 'description', 'price', 'location', 'bedrooms', 'bathrooms'];
 
   // Find the apartment by ID from the database
   const apartment = await Apartment.findOne({ _id: apartmentId });
