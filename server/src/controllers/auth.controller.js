@@ -254,7 +254,7 @@ export const updateUserProfile = tryCatch(async(req, res) => {
   const update = {};
   const allowedProps = ['first_name', 'last_name', 'email', 'phone_number']
   for (const prop in req.body) {
-    if(Object.prototype.hasOwnProperty.call(req.body, prop) && allowedProps.includes(prop) && req.body[prop]) {
+    if(allowedProps.includes(prop) && req.body[prop]) {
       update[prop] = req.body[prop]
     }
   }
