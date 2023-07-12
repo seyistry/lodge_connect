@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 import authRouter from './routes/auth.route.js';
 import apartmentRouter from './routes/apartment.route.js';
 import favoritesRouter from './routes/favorite.route.js';
+import reviewsRouter from './routes/reviews.route.js';
 
 const app = express();
 
@@ -17,8 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // mount routes
 app.use('/lodge-connect/user', authRouter);
-app.use("/lodge-connect/apartment", apartmentRouter);
-app.use("/lodge-connect/favorite", favoritesRouter);
+app.use('/lodge-connect/apartment', apartmentRouter);
+app.use('/lodge-connect/favorite', favoritesRouter);
+app.use('lodge-connect/apartment/:apartmentId/reviews', reviewsRouter);
 
 // index route
 app.get('/', (req, res) => {
