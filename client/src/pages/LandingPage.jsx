@@ -1,4 +1,5 @@
 import BestChoice from '../components/BestChoice';
+import Favorite from '../components/Favorite';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
@@ -10,6 +11,7 @@ function LandingPage() {
       <Header />
       <Hero />
       <Services />
+      <Favorite />
       <BestChoice />
       <Footer />
     </div>

@@ -15,16 +15,11 @@ export default function BestChoice() {
           Popular Residences
         </p>
         <div className="grid x md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-5 pt-2">
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
+          {['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'].map(
+            (item, index) => (
+              <ProductCard key={index} item={item} id={index} />
+            )
+          )}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const services = [
     description: 'Lorem ipsum dolor sit amet consectetur',
   },
   {
-    title: 'Sell Properties',
+    title: 'Lease  Properties',
     description: 'Lorem ipsum dolor sit amet consectetur',
   },
   {

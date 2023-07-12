@@ -1,131 +1,62 @@
-import React,{ useContext, useState } from 'react'
-import { userContext } from './userContext.jsx';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
-import PagesIndex from './pagesIndex.jsx';
+import { useState } from 'react';
+import { Tab } from '@headlessui/react';
+import Header from '../components/Header';
+import Profile from '../components/Profile';
+import Booking from '../components/Booking';
+import Accommodation from '../components/Accommodation';
 
-
-const AccountPage = () => {
-  const {user,setUser} = useContext(userContext)
-  // const [reqState,SetReqstate] = useState("profile")
-  let {subpage} = useParams()
-
-  // const {pathname} = useLocation()
-  // let subpage = pathname.split('/')?.[2];
-
-  // // if(subpage === undefined ) {subpage ="profile"}
-  // // let classes = (type)=>{
-    
-  // //   if(type === subpage){
-  // //     return( 'bg-red-200 rounded-full')
-  // //   }
-  // }
- 
-  if (subpage === undefined) {
-    subpage = 'profile';
-  }
-  function linkClasses (type=null) {
-    let classes = 'inline-flex gap-1 py-2 px-6 rounded-full';
-    if (type === subpage) {
-      classes += ' bg-red-500 text-white';
-    } else {
-      classes += ' bg-gray-200';
-    }
-    return classes;
-  }
-  console.log(user)
-  console.log(subpage)
-  return (
-<div>
-    <nav className="w-full flex justify-center mt-8 gap-2 mb-8">
-    <Link className={linkClasses('profile')} to={'/account'}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-      </svg>
-      My profile
-    </Link>
-    {/* <Link className={linkClasses('bookings')} to={'/account/bookings'}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-      </svg>
-      My bookings
-    </Link> */}
-    <Link className={linkClasses('places')} to={'/account/places'}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
-      </svg>
-      My accommodations
-    </Link>
-   
-
-  </nav>
-  {subpage === "profile" && (
-        <div className='mx-auto text-center'>
-          <p  className='p-2'>Logged in asin {user.name} </p>
-          
-          <button className='bg-red-400 min-w-[20%] p-4 p-2 rounded-lg'>logout</button>
-         
-        </div>
-
-      )}
-
-    {subpage ==="places" && (
-        <div>
-          <PagesIndex />
-        </div>
-
-      )}
-      
-  </div>
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //   <div>
-  //     <nav className='flex gap-3 mt-3 w-full justify-center mx-auto'>
-  //       <Link className= {`${classes("profile")}  ' py-2 px-6`} to={"/account"}>My account</Link>
-  //       <Link  className={`${classes("booking")}  ' py-2 px-6`} to={"/account/booking"}>My bookings</Link>
-  //       <Link className={`${classes("places")}  ' py-2 px-6`} to={"/account/places"}>My places</Link>
-  //     </nav>
-
-  //    
-  //    
-  //   </div>
-  // )
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
 }
 
-export default AccountPage
+const Tabs = {
+  0: <Profile />,
+  1: <Booking />,
+  2: <Accommodation />,
+};
+
+export default function Example() {
+  let [categories] = useState(['My Profile', 'My Booking', 'My Accommodation']);
+  return (
+    <>
+      <Header />
+      <div className="flex justify-center">
+        <div className="w-full max-w-md px-2 py-8 sm:px-0">
+          <Tab.Group>
+            <Tab.List className="flex space-x-1 rounded-full bg-brand-200 p-1">
+              {Object.keys(categories).map((category) => (
+                <Tab
+                  key={category}
+                  className={({ selected }) =>
+                    classNames(
+                      'w-full rounded-full py-2.5 text-sm font-medium leading-5 ',
+                      'ring-[white] ring-opacity-60 ring-offset-2 ring-offset-brand-500 focus:outline-none ',
+                      selected
+                        ? 'bg-[white] shadow text-brand-500'
+                        : 'text-brandText-500 hover:bg-white/[0.12] hover:text-white '
+                    )
+                  }
+                >
+                  {categories[category]}
+                </Tab>
+              ))}
+            </Tab.List>
+            <Tab.Panels className="mt-2">
+              {Object.keys(Tabs).map((item) => (
+                <Tab.Panel
+                  key={item}
+                  className={classNames(
+                    'rounded-xl p-3',
+                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+                  )}
+                >
+                  {Tabs[item]}
+                </Tab.Panel>
+              ))}
+            </Tab.Panels>
+          </Tab.Group>
+        </div>
+      </div>
+    </>
+  );
+}
