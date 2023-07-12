@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import authRouter from './routes/auth.route.js';
 import apartmentRouter from './routes/apartment.route.js';
+import favoritesRouter from './routes/favorite.route.js';
 
 const app = express();
 
@@ -15,8 +16,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // mount routes
-app.use("/lodge-connect/apartment", apartmentRouter);
 app.use('/lodge-connect/user', authRouter);
+app.use("/lodge-connect/apartment", apartmentRouter);
+app.use("/lodge-connect/favorite", favoritesRouter);
 
 // index route
 app.get('/', (req, res) => {
