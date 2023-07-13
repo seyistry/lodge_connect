@@ -47,7 +47,7 @@ export default function Example() {
                   key={item}
                   className={classNames(
                     'rounded-xl p-3',
-                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
+                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400'
                   )}
                 >
                   {Tabs[item]}

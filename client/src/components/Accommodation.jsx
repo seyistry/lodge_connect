@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { base_url } from '../utils/apiLinks';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 const schema = yup
@@ -190,15 +190,29 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
-        <input {...register('image', {})} type="file" accept="image/*" />
+        <label
+          className="flex mb-2 item-center justify-center shadow bg-brand-200 rounded-md text-sm font-medium py-2"
+          htmlFor="add_image"
+        >
+          <PlusCircleIcon className="h-5 w-5" />
+          <p className="pl-2">Add Image</p>
+        </label>
         {errors.image && (
           <p className="text-sm text-[red]">{errors.image?.message}</p>
         )}
+        <input
+          {...register('image', {})}
+          type="file"
+          accept="image/*"
+          multiple
+          id="add_image"
+          className='hidden'
+        />
       </div>
       <div className="mt-5 flex justify-center">
         {/* <button
           type="submit"
-          className=" bg-brand-500 rounded-full py-2 px-6 font-bold text-[white]"
+          className=" bg-brand-500 rounded-full py-25px-5 font-bold text-[white]"
         >
           Add Now
         </button> */}
