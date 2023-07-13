@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { base_url } from '../utils/apiLinks';
-import { PlusCircleIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -103,10 +104,12 @@ const Form = () => {
       }).then((response) => {
         response.json().then((obj) => {
           if (obj.success) {
-            console.log(obj);
+            toast.success(obj.message);
+            setSubmit(() => false);
           } else {
             console.log(obj);
             setSubmit(() => false);
+            toast.error(obj.error.message);
           }
         });
       });
@@ -122,8 +125,16 @@ const Form = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <ToastContainer />
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="title"
+        >
+          Title
+        </label>
         <input
+          id="title"
           type="text"
           placeholder="title"
           {...register('title', {})}
@@ -135,7 +146,14 @@ const Form = () => {
       </div>
 
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="desc"
+        >
+          Description
+        </label>
         <input
+          id="desc"
           type="text"
           placeholder="description"
           {...register('description', {})}
@@ -146,7 +164,14 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="price"
+        >
+          Price
+        </label>
         <input
+          id="price"
           type="number"
           placeholder="price"
           {...register('price', {})}
@@ -157,7 +182,14 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="loc"
+        >
+          Location
+        </label>
         <input
+          id="loc"
           type="text"
           placeholder="location"
           {...register('location', {})}
@@ -168,7 +200,14 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="bed"
+        >
+          Bedrooms
+        </label>
         <input
+          id="bed"
           type="number"
           placeholder="bedrooms"
           {...register('bedrooms', {})}
@@ -179,7 +218,14 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
+        <label
+          className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+          htmlFor="bath"
+        >
+          Bathrooms
+        </label>
         <input
+          id="bath"
           type="number"
           placeholder="bathrooms"
           {...register('bathrooms', {})}
@@ -206,7 +252,7 @@ const Form = () => {
           accept="image/*"
           multiple
           id="add_image"
-          className='hidden'
+          className="hidden"
         />
       </div>
       <div className="mt-5 flex justify-center">

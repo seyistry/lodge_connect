@@ -6,6 +6,7 @@ import logo from '../assets/images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { base_url } from '../utils/apiLinks';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -37,6 +38,7 @@ export default function VerificationPage() {
             navigate('/');
           } else {
             setSubmit(() => false);
+            toast.error(data.error.message);
           }
         });
       });
@@ -52,6 +54,7 @@ export default function VerificationPage() {
 
   return (
     <div className="w-full h-[100vh] flex items-center bg-gradient-to-b from-gray-800 to-black">
+      <ToastContainer />
       <div className="container mx-auto">
         <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
           {/* style the left image */}

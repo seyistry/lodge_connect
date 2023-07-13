@@ -8,6 +8,7 @@ import logo from '../assets/images/logo.png';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { base_url } from '../utils/apiLinks';
+import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -68,6 +69,7 @@ const RegisterPage = () => {
             setSubmit(() => false);
           } else {
             console.log('error');
+            toast.error(data.error.message);
             setSubmit(() => false);
           }
         });
@@ -96,7 +98,6 @@ const RegisterPage = () => {
           >
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
-
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
@@ -139,6 +140,7 @@ const RegisterPage = () => {
           </div>
         </Dialog>
       </Transition>
+      <ToastContainer />
       <div className="container mx-auto">
         <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
           {/* style the left image */}

@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { base_url } from '../utils/apiLinks';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 const userSchema = yup
   .object({
@@ -76,6 +77,7 @@ export default function Profile() {
       }).then((response) => {
         response.json().then((obj) => {
           if (obj.success) {
+            toast.success(obj.message);
             dispatch(
               addUser({
                 ...userBio,
@@ -89,6 +91,7 @@ export default function Profile() {
             setUpdateProfile(false);
           } else {
             console.log('error');
+            toast.error(obj.error.message);
             setUpdateProfile(false);
           }
         });
@@ -114,10 +117,11 @@ export default function Profile() {
       }).then((response) => {
         response.json().then((obj) => {
           if (obj.success) {
-            console.log('Success');
+            toast.success(obj.message);
             setUpdatePassword(false);
           } else {
             console.log('error');
+            toast.error(obj.error.message);
             setUpdatePassword(false);
           }
         });
@@ -129,9 +133,17 @@ export default function Profile() {
 
   return (
     <div>
+      <ToastContainer />
       <form onSubmit={handleSubmit(onSubmitProfileUpdate)}>
         <div className="mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="first"
+          >
+            First Name
+          </label>
           <input
+            id="first"
             type="text"
             placeholder="First Name"
             {...register('first_name', {})}
@@ -142,7 +154,14 @@ export default function Profile() {
           )}
         </div>
         <div className="mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="last"
+          >
+            Last Name
+          </label>
           <input
+            id="last"
             type="text"
             placeholder="Last Name"
             {...register('last_name', {})}
@@ -153,7 +172,14 @@ export default function Profile() {
           )}
         </div>
         <div className="mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="phone"
+          >
+            Phone Number
+          </label>
           <input
+            id="phone"
             type="text"
             placeholder="Phone Number"
             {...register('phone_number', {})}
@@ -199,7 +225,14 @@ export default function Profile() {
 
       <form onSubmit={handleSubmit2(onSubmitPasswordUpdate)}>
         <div className="mt-4 mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="old"
+          >
+            Old Password
+          </label>
           <input
+            id="old"
             type="password"
             placeholder="Old Password"
             {...register2('old_password', {})}
@@ -211,12 +244,20 @@ export default function Profile() {
             </p>
           )}
         </div>
+        <div className="mb-4 hidden"/>
         <div className="mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="new"
+          >
+            New Password
+          </label>
           <input
+            is="new"
             type="password"
             placeholder="New Password"
             {...register2('new_password', {})}
-            className="border border-brand-200 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-2"
+            className="border bg-[red] border-brand-200 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-2"
           />
           {errors2.new_password && (
             <p className="text-sm text-[red]">
@@ -225,7 +266,14 @@ export default function Profile() {
           )}
         </div>
         <div className="mb-4">
+          <label
+            className="rounded-md text-sm font-medium ml-2 text-brandText-500"
+            htmlFor="confirm"
+          >
+            Conform Password
+          </label>
           <input
+            id="confirm"
             type="password"
             placeholder="Conform New Password"
             {...register2('confirm_password', {})}

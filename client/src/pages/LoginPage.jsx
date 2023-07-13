@@ -8,6 +8,7 @@ import { base_url } from '../utils/apiLinks';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../features/auth/user';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
@@ -41,6 +42,7 @@ export default function LoginPage() {
         headers: { Accept: '*/*', 'Content-Type': 'application/json' },
       }).then((response) => {
         response.json().then((data) => {
+          // toast.success('Waiting...');
           if (data.message === 'Login successful') {
             console.log('done');
             console.log(data);
@@ -48,6 +50,7 @@ export default function LoginPage() {
             navigate(state?.path || '/');
           } else {
             console.log(data.message);
+            toast.error(data.error.message);
             setSubmit(() => false);
           }
         });
@@ -144,8 +147,8 @@ export default function LoginPage() {
                     'Login Now'
                   )}
                 </button>
+                <ToastContainer />
               </div>
-
               <p className="text-center text-sm mt-2 text-brandText-500 italic">
                 Don't have an account yet?{' '}
                 <Link to={'/signup'}>

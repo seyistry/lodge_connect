@@ -7,6 +7,7 @@ import { Routes, Route } from 'react-router-dom';
 import VerificationPage from './pages/VerificationPage';
 import ResendOTP from './pages/ResendOTP';
 import RequireAuth from './pages/RequireAuth';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   return (
