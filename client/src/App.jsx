@@ -8,6 +8,7 @@ import VerificationPage from './pages/VerificationPage';
 import ResendOTP from './pages/ResendOTP';
 import RequireAuth from './pages/RequireAuth';
 import 'react-toastify/dist/ReactToastify.css';
+import ForgotPassword from './pages/ForgotPassword';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/product" element={<ProductPage />} />
       <Route path="/verify" element={<VerificationPage />} />
       <Route path="/resend-otp" element={<ResendOTP />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route
         path="/account"
         element={

@@ -22,7 +22,7 @@ const schema = yup
       .required('Last name is required with minimum length of 3'),
     email: yup.string().email().required('Valid email is required'),
     phone_number: yup.string().matches(/^(\+\d{1,3}[- ]?)?\d{13}$/, {
-      message: 'Please enter valid phone number.',
+      message: 'Please enter valid phone number. Add your country code extension example 234',
       excludeEmptyString: false,
     }),
     password: yup
@@ -145,7 +145,9 @@ const RegisterPage = () => {
         <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
           {/* style the left image */}
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-12 bg-no-repeat bg-cover bg-center bg-regback">
-            <img src={logo} alt="logo" />
+            <Link to="/">
+              <img src={logo} alt="logo" />
+            </Link>
             <div className="mt-5">
               <p className="text-brandText-500">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean

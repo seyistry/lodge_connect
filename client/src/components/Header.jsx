@@ -170,7 +170,7 @@ export default function Header() {
                       </Link>
                       <Link to="/signup">
                         <button className="transparent border-2 rounded-3xl border-brand-500 text-brand-500 px-5 py-2 text-sm font-medium">
-                          Sign in
+                          Sign up
                         </button>
                       </Link>
                     </div>

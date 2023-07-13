@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom';
 
 const schema = yup
   .object({
-    verifyCode: yup.string().required('Verification code is required'),
+    email: yup.string().email().required('Email is required'),
   })
   .required();
 
-export default function VerificationPage() {
+export default function ForgotPassword() {
   const {
     register,
     handleSubmit,
@@ -28,7 +28,9 @@ export default function VerificationPage() {
         <div className="bg-white rounded-xl shadow-lg flex flex-col lg:flex-row w-10/12 lg:w-8/12 mx-auto overflow:hidden">
           {/* style the left image */}
           <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-12 bg-no-repeat bg-cover bg-center bg-regback">
-            <img src={logo} alt="logo" />
+            <Link to="/">
+              <img src={logo} alt="logo" />
+            </Link>
             <div className="mt-5">
               <p className="text-brandText-500">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
@@ -52,13 +54,13 @@ export default function VerificationPage() {
               <div className="mb-4">
                 <input
                   type="text"
-                  placeholder="verification code"
-                  {...register('verifyCode', {})}
+                  placeholder="Email"
+                  {...register('email', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.verifyCode && (
+                {errors.email && (
                   <p className="text-sm text-[red]">
-                    {errors.verifyCode?.message}
+                    {errors.email?.message}
                   </p>
                 )}
               </div>
@@ -72,7 +74,7 @@ export default function VerificationPage() {
                 </button>
               </div>
 
-              <p className="text-center text-sm mt-2 text-brandText-500 italic">
+              {/* <p className="text-center text-sm mt-2 text-brandText-500 italic">
                 make a request for a new code here{' '}
                 <button
                   type="button"
@@ -80,7 +82,7 @@ export default function VerificationPage() {
                 >
                   request new code
                 </button>
-              </p>
+              </p> */}
             </form>
           </div>
         </div>
