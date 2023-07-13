@@ -35,7 +35,7 @@ export default function VerificationPage() {
       }).then((response) => {
         response.json().then((data) => {
           if (data.success) {
-            navigate('/');
+            navigate('/resend-otp');
           } else {
             setSubmit(() => false);
             toast.error(data.error.message);

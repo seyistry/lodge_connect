@@ -20,12 +20,12 @@ export default function ProductPage() {
                   <p className="text-brandText-100 font-semibold text-xs ">
                     <span className="text-brand-500">2</span> baths
                   </p>
-                  <p className="text-brandText-100 font-semibold text-xs ">
+                  {/* <p className="text-brandText-100 font-semibold text-xs ">
                     <span className="text-brand-500">800</span> Sq.ft
                   </p>
                   <p className="text-brandText-100 font-semibold text-xs ">
                     <span className="text-brand-500">2</span> parking
-                  </p>
+                  </p> */}
                 </div>
                 <p className="text-brandText-100 text-xs font-medium">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -47,7 +47,7 @@ export default function ProductPage() {
                   Rent
                 </button>
               </div>
-              <div className="bg-[white] p-5 flex flex-col">
+              {/* <div className="bg-[white] p-5 flex flex-col">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
@@ -68,7 +68,7 @@ export default function ProductPage() {
                 >
                   Start chat
                 </button>
-              </div>
+              </div> */}
               <div className="bg-[white] py-5 px-8 flex flex-col">
                 <p className="text text-center text-brandText-500 font-semibold text-lg">
                   Safety tips

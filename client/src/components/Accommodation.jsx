@@ -76,6 +76,15 @@ export default function Accommodation() {
 
 const Form = () => {
   const [submit, setSubmit] = useState(false);
+  const [file, setFile] = useState([]);
+  const handleChange = (e) => {
+    const fileInput = e.target.files;
+    const listing = [];
+    for (const file of fileInput) {
+      listing.push(file.name);
+    }
+    setFile(listing);
+  };
 
   const userBio = useSelector(userState);
   const {
@@ -95,7 +104,7 @@ const Form = () => {
     try {
       const bearer = userBio.token;
       await fetch(`${base_url}/lodge-connect/apartment/`, {
-        method: 'PUT',
+        method: 'POST',
         body: JSON.stringify(data),
         headers: {
           Authorization: `Bearer ${bearer}`,
@@ -253,7 +262,11 @@ const Form = () => {
           multiple
           id="add_image"
           className="hidden"
+          onChange={handleChange}
         />
+        {file.map((name, index) => (
+          <p key={index} className='text-xs italic text-brand-500'>{name}</p>
+        ))}
       </div>
       <div className="mt-5 flex justify-center">
         {/* <button

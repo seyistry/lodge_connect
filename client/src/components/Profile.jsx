@@ -244,7 +244,6 @@ export default function Profile() {
             </p>
           )}
         </div>
-        <div className="mb-4 hidden"/>
         <div className="mb-4">
           <label
             className="rounded-md text-sm font-medium ml-2 text-brandText-500"
@@ -253,11 +252,11 @@ export default function Profile() {
             New Password
           </label>
           <input
-            is="new"
+            id="new"
             type="password"
             placeholder="New Password"
             {...register2('new_password', {})}
-            className="border bg-[red] border-brand-200 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-2"
+            className="border border-brand-200 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-2"
           />
           {errors2.new_password && (
             <p className="text-sm text-[red]">
