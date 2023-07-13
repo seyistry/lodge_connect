@@ -28,7 +28,7 @@ export default function ResendOTP() {
   const onSubmit = async (data) => {
     setSubmit(true);
     try {
-      await fetch(`${base_url}/lodge-connect/user/verify-email`, {
+      await fetch(`${base_url}/lodge-connect/user/resend-otp`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },

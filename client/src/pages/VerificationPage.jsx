@@ -28,14 +28,14 @@ export default function VerificationPage() {
   const onSubmit = async (data) => {
     setSubmit(() => true);
     try {
-      await fetch(`${base_url}/lodge-connect/user/resend-otp`, {
+      await fetch(`${base_url}/lodge-connect/user/verify-email`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
       }).then((response) => {
         response.json().then((data) => {
           if (data.success) {
-            navigate('/resend-otp');
+            navigate('/');
           } else {
             setSubmit(() => false);
             toast.error(data.error.message);
