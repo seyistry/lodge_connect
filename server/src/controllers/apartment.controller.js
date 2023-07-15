@@ -4,6 +4,7 @@ import tryCatch from '../utils/helpers/tryCatch.helper.js';
 import { checkPermissions } from '../utils/helpers/utilFunctions.helper.js';
 import { successResponse } from '../utils/libs/response.js';
 import { StatusCodes } from 'http-status-codes';
+import cloudinary from '../config/cloudinary.js';
 
 // controller to fetch all the apartments in the database
 export const getAllApartments = tryCatch(async (req, res) => {
@@ -79,13 +80,16 @@ export const getSingleApartment = tryCatch(async (req, res) => {
 // controller to create a new apartment and save to the database
 export const postApartment = tryCatch(async (req, res) => {
   const owner = req.userId;
-  console.log(req.fields);
   const { title, description, price, location, bedrooms, bathrooms } = req.body;
+
+  // Upload Image to cloudinary
+  const uploadImage = await cloudinary.uploader.upload(req.file.path)
 
   // create a new apartment object
   const apartment = new Apartment({
     title,
     description,
+    image: uploadImage.secure_url,
     price,
     location,
     bedrooms,
