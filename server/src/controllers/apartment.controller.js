@@ -78,12 +78,12 @@ export const getSingleApartment = tryCatch(async (req, res) => {
 
 // controller to create a new apartment and save to the database
 export const postApartment = tryCatch(async (req, res) => {
-  req.body.owner = req.userId;
-  const { image, title, description, price, location, bedrooms, bathrooms, owner } = req.body;
+  const owner = req.userId;
+  console.log(req.fields);
+  const { title, description, price, location, bedrooms, bathrooms } = req.body;
 
   // create a new apartment object
   const apartment = new Apartment({
-    image,
     title,
     description,
     price,
@@ -93,10 +93,6 @@ export const postApartment = tryCatch(async (req, res) => {
     owner,
   });
 
-  // apartment.image = req.files.map((el) => ({
-  //   url: el.path,
-  //   filename: el.filename,
-  // }));
 
   await apartment.save();
 
