@@ -22,7 +22,7 @@ const schema = yup
       .required('Last name is required with minimum length of 3'),
     email: yup.string().email().required('Valid email is required'),
     phone_number: yup.string().matches(/^(\+\d{1,3}[- ]?)?\d{13}$/, {
-      message: 'Please enter valid phone number. Add your country code extension example 234',
+      message: 'Please enter valid phone number. Add your country code extension example 234**********',
       excludeEmptyString: false,
     }),
     password: yup
