@@ -245,27 +245,29 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
-        <label
+        {/* <label
           className="flex mb-2 item-center justify-center shadow bg-brand-200 rounded-md text-sm font-medium py-2"
           htmlFor="add_image"
         >
           <PlusCircleIcon className="h-5 w-5" />
           <p className="pl-2">Add Image</p>
-        </label>
-        {errors.image && (
-          <p className="text-sm text-[red]">{errors.image?.message}</p>
-        )}
+        </label> */}
         <input
           {...register('image', {})}
           type="file"
           accept="image/*"
           multiple
           id="add_image"
-          className="hidden"
-          onChange={handleChange}
+          // className="hidden"
+          // onChange={handleChange}
         />
+        {errors.image && (
+          <p className="text-sm text-[red]">{errors.image?.message}</p>
+        )}
         {file.map((name, index) => (
-          <p key={index} className='text-xs italic text-brand-500'>{name}</p>
+          <p key={index} className="text-xs italic text-brand-500">
+            {name}
+          </p>
         ))}
       </div>
       <div className="mt-5 flex justify-center">

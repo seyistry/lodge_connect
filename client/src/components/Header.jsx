@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import logo from '../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,10 +11,6 @@ const navigation = [
   { name: 'Rent', href: '#', current: true },
   { name: 'Lease ', href: '#', current: false },
 ];
-
-const user = {
-  imageUrl: 'https://i.pravatar.cc/300',
-};
 
 export default function Header() {
   const userBio = useSelector(userState);
@@ -80,11 +76,18 @@ export default function Header() {
                             <div>
                               <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                 <span className="sr-only">Open user menu</span>
-                                <img
-                                  className="h-8 w-8 rounded-full"
-                                  src={user.imageUrl}
-                                  alt=""
-                                />
+                                <div className="flex justify-center items-center bg-brand-500 h-10 w-10 rounded-full">
+                                  {userBio.user.fullName
+                                    .split(' ')
+                                    .map((item, index) => (
+                                      <span
+                                        key={index}
+                                        className="text-sm text-[white] font-bold"
+                                      >
+                                        {item.charAt(0).toUpperCase()}
+                                      </span>
+                                    ))}
+                                </div>
                               </Menu.Button>
                             </div>
                             <Transition
@@ -177,12 +180,17 @@ export default function Header() {
                   ) : (
                     <div className="">
                       <div className="flex items-center px-5">
-                        <div className="flex-shrink-0">
-                          <img
-                            className="h-10 w-10 rounded-full"
-                            src={user.imageUrl}
-                            alt=""
-                          />
+                        <div className="flex justify-center items-center bg-brand-500 h-10 w-10 rounded-full">
+                          {userBio.user.fullName
+                            .split(' ')
+                            .map((item, index) => (
+                              <span
+                                key={index}
+                                className="text-sm text-[white] font-bold"
+                              >
+                                {item.charAt(0).toUpperCase()}
+                              </span>
+                            ))}
                         </div>
 
                         <div className="ml-3">
