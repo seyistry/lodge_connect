@@ -17,11 +17,7 @@ router.get("/all", getAllApartments);
 router.get("/", userAuth, ownerDashboard);
 router.post("/", userAuth, upload.single("image"), postApartment);
 router.get("/:apartmentId", getSingleApartment);
-router.put(
-	"/:apartmentId",
-	userAuth,
-	/*upload.array('image'),*/ updateApartment
-);
+router.put("/:apartmentId", userAuth, upload.single("image"), updateApartment);
 router.delete("/:apartmentId", userAuth, removeApartment);
 
 export default router;

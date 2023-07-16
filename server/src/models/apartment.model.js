@@ -11,6 +11,7 @@ const apartmentSchema = new Schema(
     bathrooms: { type: Number, required: true },
     owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    cloudinary_id: { type: String },
   },
   { timestamps: true }
 );

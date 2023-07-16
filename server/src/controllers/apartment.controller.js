@@ -95,13 +95,13 @@ export const postApartment = tryCatch(async (req, res) => {
     bedrooms,
     bathrooms,
     owner,
+    cloudinary_id: uploadImage.public_id
   });
-
 
   await apartment.save();
 
   successResponse(res, 'Apartment successfully created', { apartment }, StatusCodes.CREATED);
-});
+}); 
 
 export const updateApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
@@ -112,6 +112,15 @@ export const updateApartment = tryCatch(async (req, res) => {
 
   // Check if the user id === the owner ID property in the apartment
   checkPermissions(req.userId, apartment.owner);
+
+  // delete the existing image from cloudinary
+  await cloudinary.uploader.destroy(apartment.cloudinary_id);
+
+  if (req.file) {
+    const uploadImage = await cloudinary.uploader.upload(req.file.path);
+    apartment.image = uploadImage.secure_url || apartment.image;
+    apartment.cloudinary_id = uploadImage.public_id || apartment.cloudinary_id;
+  }
 
   // Update the data in the database
   for (const prop in req.body) {
@@ -136,6 +145,9 @@ export const removeApartment = tryCatch(async (req, res) => {
 
   // Check if the user id === the owner ID property in the apartment
   checkPermissions(req.userId, apartment.owner);
+
+  // delete the image from cloudinary
+  await cloudinary.uploader.destroy(apartment.cloudinary_id);
 
   await apartment.deleteOne();
 
