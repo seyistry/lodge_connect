@@ -7,14 +7,13 @@ import { base_url } from '../utils/apiLinks';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { serialize } from 'object-to-formdata';
 
 const schema = yup
   .object({
     image: yup
       .mixed()
-      .test('required', 'Please select a image', (value) => {
-        return value && value.length;
-      })
+      .test('image', 'Please select a image', (value) => value && value.length)
       .required('image is required'),
     title: yup.string().min(6).required('title is required'),
     description: yup.string().min(10).required('description is required'),
@@ -101,14 +100,24 @@ const Form = () => {
   });
   const onSubmit = async (data) => {
     setSubmit(() => true);
+    // const formData = serialize(data, { indices: false, dotsForObjectNotation: false, });
+    // console.log(formData);
+    let formData = new FormData();
+    formData.append('description', data.description);
+    formData.append('title', data.title);
+    formData.append('price', data.price);
+    formData.append('location', data.location);
+    formData.append('bedrooms', data.bedrooms);
+    formData.append('bathrooms', data.bathrooms);
+    formData.append('image', data.image[0]);
+    console.log(formData);
     try {
       const bearer = userBio.token;
       await fetch(`${base_url}/lodge-connect/apartment/`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: formData,
         headers: {
           Authorization: `Bearer ${bearer}`,
-          'Content-Type': 'application/json',
         },
       }).then((response) => {
         response.json().then((obj) => {
@@ -245,23 +254,24 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
-        {/* <label
+        <label
           className="flex mb-2 item-center justify-center shadow bg-brand-200 rounded-md text-sm font-medium py-2"
-          htmlFor="add_image"
+          htmlFor="image"
         >
           <PlusCircleIcon className="h-5 w-5" />
           <p className="pl-2">Add Image</p>
-        </label> */}
+        </label>
         <input
           {...register('image', {})}
           type="file"
           accept="image/*"
-          multiple
-          id="add_image"
-          // className="hidden"
-          // onChange={handleChange}
+          // multiple
+          id="image"
+          name="image"
+          className="hidden"
+          onChange={handleChange}
         />
-        {errors.image && (
+        {file.length === 0 && errors.image && (
           <p className="text-sm text-[red]">{errors.image?.message}</p>
         )}
         {file.map((name, index) => (
