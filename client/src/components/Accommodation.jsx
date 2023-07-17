@@ -4,10 +4,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { base_url } from '../utils/apiLinks';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import {
+  PlusCircleIcon,
+  EllipsisVerticalIcon,
+} from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { serialize } from 'object-to-formdata';
+import { Disclosure } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/20/solid';
 
 const schema = yup
   .object({
@@ -48,13 +53,99 @@ const schema = yup
 export default function Accommodation() {
   const userBio = useSelector(userState);
   const [add, setAdd] = useState(false);
+  const [apartmentList, setApartmentList] = useState([]);
+  const [update, setUpdate] = useState();
+
+  const deleteApartment = async (id) => {
+    const bearer = userBio.token;
+    try {
+      await fetch(`${base_url}/lodge-connect/apartment/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${bearer}`,
+        },
+      }).then((response) => {
+        response.json().then((obj) => {
+          if (obj.success) {
+            toast.success(obj.message);
+            setUpdate(id);
+          } else {
+            toast.error(obj.message);
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getApartment = async () => {
+    const bearer = userBio.token;
+    try {
+      await fetch(`${base_url}/lodge-connect/apartment/`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${bearer}`,
+        },
+      }).then((response) => {
+        response.json().then((obj) => {
+          if (obj.success) {
+            setApartmentList(obj.payload.apartments);
+            console.log(obj.payload.apartments);
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getApartment();
+  }, [update]);
+
   return (
     <div>
       {add ? (
         <Form />
       ) : (
         <>
-          <p>Accommodation List</p>
+          <ToastContainer />
+          {apartmentList.map((item, index) => (
+            <Disclosure key={index} as="div" className="mb-2">
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex w-full justify-between rounded-md px-4 py-2 text-left text-sm font-medium text-brandText-500 shadow hover:bg-brand-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <span className="text-md font-thin">{item.title}</span>
+                    <ChevronUpIcon
+                      className={`${
+                        open ? 'rotate-180 transform' : ''
+                      } h-5 w-5 text-purple-500`}
+                    />
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500 mt-2 bg-[white] rounded-md shadow">
+                    <p className="text-brandText-100 text-sm">
+                      {item.description}
+                    </p>
+                    <p className="text-right">
+                      <span className="text-xs cursor-pointer text-brandText-100 hover:text-brand-500">
+                        View
+                      </span>
+                      <span className="text-xs ">
+                        <EllipsisVerticalIcon className="h-3 text-brandText-100 w-5 inline" />
+                      </span>
+                      <span
+                        className="text-xs cursor-pointer text-brandText-100 hover:text-[red]"
+                        onClick={() => deleteApartment(item._id)}
+                      >
+                        Delete
+                      </span>
+                    </p>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+          ))}
           <div className="flex justify-center">
             <button
               type="button"
@@ -254,13 +345,13 @@ const Form = () => {
         )}
       </div>
       <div className="mb-4">
-        <label
+        {/* <label
           className="flex mb-2 item-center justify-center shadow bg-brand-200 rounded-md text-sm font-medium py-2"
           htmlFor="image"
         >
           <PlusCircleIcon className="h-5 w-5" />
           <p className="pl-2">Add Image</p>
-        </label>
+        </label> */}
         <input
           {...register('image', {})}
           type="file"
@@ -268,8 +359,8 @@ const Form = () => {
           // multiple
           id="image"
           name="image"
-          className="hidden"
-          onChange={handleChange}
+          // className="hidden"
+          // onChange={handleChange}
         />
         {file.length === 0 && errors.image && (
           <p className="text-sm text-[red]">{errors.image?.message}</p>
