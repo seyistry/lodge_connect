@@ -1,7 +1,32 @@
 import { MinusIcon } from '@heroicons/react/24/outline';
 import ProductCard from './cards/ProductCard';
+import { base_url } from '../utils/apiLinks';
+import { useEffect, useState } from 'react';
 
 export default function BestChoice() {
+  const [loaded, setLoaded] = useState([]);
+  const getAllApartments = async () => {
+    try {
+      await fetch(`${base_url}/lodge-connect/apartment/all`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }).then((response) => {
+        response.json().then((obj) => {
+          if (obj.success) {
+            setLoaded(obj.payload.apartments);
+            // console.log(obj.payload.apartments);
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllApartments();
+  }, []);
+
   return (
     <div className="bg-gradient-to-b from-[#F4F7F6] to-brand-100 ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
@@ -15,11 +40,9 @@ export default function BestChoice() {
           Popular Residences
         </p>
         <div className="grid x md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-5 pt-2">
-          {['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'].map(
-            (item, index) => (
-              <ProductCard key={index} item={item} id={index} />
-            )
-          )}
+          {loaded.map((item, index) => (
+            <ProductCard key={index} item={item} />
+          ))}
         </div>
       </div>
     </div>

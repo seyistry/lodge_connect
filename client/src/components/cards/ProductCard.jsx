@@ -8,7 +8,8 @@ import {
 } from '../../features/property/favorite';
 import { userState } from '../../features/auth/user';
 
-export default function ProductCard({ item, id }) {
+export default function ProductCard({ item }) {
+  console.log(item);
   const dispatch = useDispatch();
   const liked = useSelector(likesState);
   const userAuth = useSelector(userState);
@@ -16,10 +17,10 @@ export default function ProductCard({ item, id }) {
 
   function handleFavorite() {
     if (userAuth)
-      if (!Object.keys(liked).includes(`${id}`)) {
-        dispatch(addlikes({ [id]: item }));
+      if (!Object.keys(liked).includes(`${item._id}`)) {
+        dispatch(addlikes({ [item._id]: item }));
       } else {
-        dispatch(removelikes(`${id}`));
+        dispatch(removelikes(`${item._id}`));
       }
     else {
       navigate('/login');
@@ -31,23 +32,26 @@ export default function ProductCard({ item, id }) {
         <HeartIcon
           className="cursor-pointer absolute h-8 w-8 m-2"
           style={{
-            color: Object.keys(liked).includes(`${id}`) ? '#EA4F65' : 'white',
+            color: Object.keys(liked).includes(`${item._id}`)
+              ? '#EA4F65'
+              : 'white',
           }}
           onClick={handleFavorite}
         />
         <img
-          src="https://unsplash.com/photos/2gDwlIim3Uw/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8M3x8bW9kZXJuJTIwaG91c2V8ZW58MHx8fHwxNjg4Mzg0ODM3fDA&force=true&w=640"
+          src={item.image}
           alt="house image"
+          className="h-[100%] w-[100%] object-cover hover:object-contain"
         />
       </div>
       <div className="flex flex-col h-[40%] justify-between px-5 py-2">
-        <p className="text-brandText-500 text-sm font-semibold">{item}</p>
+        <p className="text-brandText-500 text-sm font-semibold">{item.title}</p>
         <div className="flex gap-2">
           <p className="text-brandText-100 font-semibold text-xs ">
-            <span className="text-brand-500">2</span> beds
+            <span className="text-brand-500">{item.bedrooms}</span> beds
           </p>
           <p className="text-brandText-100 font-semibold text-xs ">
-            <span className="text-brand-500">2</span> baths
+            <span className="text-brand-500">{item.bathrooms}</span> baths
           </p>
           {/* <p className="text-brandText-100 font-semibold text-xs ">
             <span className="text-brand-500">800</span> Sq.ft
@@ -56,7 +60,7 @@ export default function ProductCard({ item, id }) {
             <span className="text-brand-500">2</span> parking
           </p> */}
         </div>
-        <p className="text-brand-500 font-semibold text-md">₦5,000,000.00</p>
+        <p className="text-brand-500 font-semibold text-md">{`₦${item.price}`}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -72,7 +76,7 @@ export default function ProductCard({ item, id }) {
               John Doe
             </p>
           </div>
-          <Link to="/product">
+          <Link to={`/products/${item._id}`}>
             <button
               type="button"
               className="font-bold text-[10px] text-brandText-500 bg-[#F2F2F2] px-6 py-2 rounded-full hover:bg-brand-500 hover:text-[white]"

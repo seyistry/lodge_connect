@@ -16,7 +16,7 @@ export default function App() {
       <Route index element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<RegisterPage />} />
-      <Route path="/product" element={<ProductPage />} />
+      <Route path="/products/:id" element={<ProductPage />} />
       <Route path="/verify" element={<VerificationPage />} />
       <Route path="/resend-otp" element={<ResendOTP />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
