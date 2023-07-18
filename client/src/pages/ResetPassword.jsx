@@ -3,21 +3,24 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import logo from '../assets/images/logo.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { base_url } from '../utils/apiLinks';
+import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
-    email: yup.string().email().required('Email is required'),
+    new_password: yup.string().min(6).required('New Password code is required'),
+    confirm_password: yup
+      .string()
+      .required()
+      .oneOf([yup.ref('new_password'), null], 'Passwords do not match'),
   })
   .required();
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
+  const { state } = useLocation();
   const [submit, setSubmit] = useState(false);
-  const navigate = useNavigate()
-
   const {
     register,
     handleSubmit,
@@ -25,35 +28,36 @@ export default function ForgotPassword() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     setSubmit(() => true);
     try {
-      await fetch(`${base_url}/lodge-connect/user/forgot-password`, {
+      await fetch(`${base_url}/lodge-connect/user/reset-password`, {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${state}`,
+        },
       }).then((response) => {
         response.json().then((data) => {
           if (data.success) {
-            toast.success(data.message);
-            setSubmit(() => false);
-            navigate('/reset-verify')
+            navigate('/login');
           } else {
-            // console.log(data.message);
-            toast.error(data.error.message);
             setSubmit(() => false);
+            toast.error(data.error.message);
           }
         });
       });
     } catch (error) {
-      toast.error(error);
-      setSubmit(() => false);
       console.error(error);
     }
 
     // let data = await response.text();
     // console.log(data);
   };
+
   // console.log(errors);
 
   return (
@@ -78,23 +82,35 @@ export default function ForgotPassword() {
           </div>
           <div className=" w-full lg:w-1/2 py-12 px-10 ">
             <h2 className="font-bold text-2xl mb-4 text-brandText-500">
-              Verify your email address
+              Reset Password
             </h2>
-            <p className="mb-4 text-brandText-500">
-              Your verification code has been sent to your email address.
-            </p>
 
             {/* create the input forms */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <input
-                  type="text"
-                  placeholder="Email"
-                  {...register('email', {})}
+                  type="password"
+                  placeholder="New Password"
+                  {...register('new_password', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.email && (
-                  <p className="text-sm text-[red]">{errors.email?.message}</p>
+                {errors.new_password && (
+                  <p className="text-sm text-[red]">
+                    {errors.new_password?.message}
+                  </p>
+                )}
+              </div>
+              <div className="mb-4">
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...register('confirm_password', {})}
+                  className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
+                />
+                {errors.confirm_password && (
+                  <p className="text-sm text-[red]">
+                    {errors.confirm_password?.message}
+                  </p>
                 )}
               </div>
 
@@ -122,23 +138,13 @@ export default function ForgotPassword() {
                           fill="#1C1D36"
                         ></path>
                       </svg>
-                      Sending...
+                      Resetting...
                     </>
                   ) : (
-                    'Verify'
+                    'Reset'
                   )}
                 </button>
               </div>
-
-              {/* <p className="text-center text-sm mt-2 text-brandText-500 italic">
-                make a request for a new code here{' '}
-                <button
-                  type="button"
-                  className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic"
-                >
-                  request new code
-                </button>
-              </p> */}
             </form>
           </div>
         </div>

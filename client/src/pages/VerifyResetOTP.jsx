@@ -4,20 +4,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import logo from '../assets/images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import { base_url } from '../utils/apiLinks';
+import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
 const schema = yup
   .object({
-    email: yup.string().email().required('Email is required'),
+    otp: yup.string().required('Verification code is required'),
   })
   .required();
 
-export default function ForgotPassword() {
+export default function VerifyResetOTP() {
   const [submit, setSubmit] = useState(false);
-  const navigate = useNavigate()
-
   const {
     register,
     handleSubmit,
@@ -25,35 +23,33 @@ export default function ForgotPassword() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     setSubmit(() => true);
     try {
-      await fetch(`${base_url}/lodge-connect/user/forgot-password`, {
+      await fetch(`${base_url}/lodge-connect/user/verify-password-otp`, {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: { Accept: '*/*', 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       }).then((response) => {
         response.json().then((data) => {
           if (data.success) {
-            toast.success(data.message);
-            setSubmit(() => false);
-            navigate('/reset-verify')
+            navigate('/reset', { state: data.payload.token });
           } else {
-            // console.log(data.message);
-            toast.error(data.error.message);
             setSubmit(() => false);
+            toast.error(data.error.message);
           }
         });
       });
     } catch (error) {
-      toast.error(error);
-      setSubmit(() => false);
       console.error(error);
     }
 
     // let data = await response.text();
     // console.log(data);
   };
+
   // console.log(errors);
 
   return (
@@ -89,12 +85,12 @@ export default function ForgotPassword() {
               <div className="mb-4">
                 <input
                   type="text"
-                  placeholder="Email"
-                  {...register('email', {})}
+                  placeholder="verification code"
+                  {...register('otp', {})}
                   className="border border-brandText-100 outline-none py-1 px-2 w-full rounded-sm focus:border-brand-500 focus:border-4"
                 />
-                {errors.email && (
-                  <p className="text-sm text-[red]">{errors.email?.message}</p>
+                {errors.otp && (
+                  <p className="text-sm text-[red]">{errors.otp?.message}</p>
                 )}
               </div>
 
@@ -122,23 +118,13 @@ export default function ForgotPassword() {
                           fill="#1C1D36"
                         ></path>
                       </svg>
-                      Sending...
+                      Verifying...
                     </>
                   ) : (
-                    'Verify'
+                    'Verify email'
                   )}
                 </button>
               </div>
-
-              {/* <p className="text-center text-sm mt-2 text-brandText-500 italic">
-                make a request for a new code here{' '}
-                <button
-                  type="button"
-                  className="underline font-medium text-brandText-500 hover:text-brand-500 not-italic"
-                >
-                  request new code
-                </button>
-              </p> */}
             </form>
           </div>
         </div>

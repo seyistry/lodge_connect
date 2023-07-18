@@ -36,14 +36,11 @@ export default function Header() {
 
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
-                          <span
-                            key={item.name}
-                            className="text-brandText-500 hover:bg-brand-500 hover:text-[white] rounded-3xl px-6 py-2 text-sm font-medium"
-                          >
-                            {item.name}
+                        <Link to="/add">
+                          <span className="text-brandText-500 font-bold hover:bg-brand-500 hover:text-[white] rounded-3xl px-6 py-2 text-sm">
+                            Lease Now
                           </span>
-                        ))}
+                        </Link>
                       </div>
                     </div>
                   </div>
@@ -108,14 +105,14 @@ export default function Header() {
                                   </Link>
                                 </Menu.Item>
                                 <Menu.Item>
-                                  <NavHashLink to="/#likes">
+                                  <NavHashLink to="/likes">
                                     <span className="block px-4 py-2 text-sm text-BrandText-500 hover:text-brand-500">
                                       Likes
                                     </span>
                                   </NavHashLink>
                                 </Menu.Item>
                                 <Menu.Item>
-                                  <Link to="/account">
+                                  <Link to="/login">
                                     <span
                                       onClick={() => dispatch(removeUser())}
                                       className="block px-4 py-2 text-sm text-[red]/70 text-BrandText-500 hover:text-brand-500"
@@ -219,7 +216,7 @@ export default function Header() {
                           </Disclosure.Button>
                         </Link>
 
-                        <NavHashLink to="/#likes">
+                        <NavHashLink to="/likes">
                           <Disclosure.Button
                             as="a"
                             className="block cursor-pointer rounded-md px-3 py-2 text-base font-medium text-brandText-500 hover:text-brand-500"

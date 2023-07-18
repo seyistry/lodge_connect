@@ -11,7 +11,6 @@ function LandingPage() {
       <Header />
       <Hero />
       <Services />
-      <Favorite />
       <BestChoice />
       <Footer />
     </div>

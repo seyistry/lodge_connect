@@ -44,23 +44,24 @@ export default function LoginPage() {
         response.json().then((data) => {
           // toast.success('Waiting...');
           if (data.message === 'Login successful') {
-            console.log('done');
-            console.log(data);
+            // console.log(data);
             dispatch(addUser(data.payload));
             navigate(state?.path || '/');
           } else {
-            console.log(data.message);
+            // console.log(data.message);
             toast.error(data.error.message);
             setSubmit(() => false);
           }
         });
       });
     } catch (error) {
+      toast.error(error);
+      setSubmit(() => false);
       console.error(error);
     }
 
     // let data = await response.text();
-    console.log(data);
+    // console.log(data);
   };
   // console.log(errors);
 
