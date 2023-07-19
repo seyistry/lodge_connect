@@ -30,7 +30,7 @@ export default function Accommodation() {
           if (obj.success) {
             toast.success(obj.message);
             setUpdate(id);
-            console.log(obj.message)
+            // console.log(obj.message)
           } else {
             toast.error(obj.message);
           }
