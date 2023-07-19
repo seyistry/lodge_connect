@@ -56,7 +56,7 @@ export default function Search() {
         </div>
       </div>
       {loaded.length === 0 ? (
-        <div className="h-[60vh] flex items-center justify-center">
+        <div className="h-[53vh] flex items-center justify-center">
           <p className="animate-bounce text-brandText-100 font-bold text-2xl">No result</p>
         </div>
       ) : (
