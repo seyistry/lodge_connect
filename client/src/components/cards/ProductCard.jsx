@@ -115,7 +115,7 @@ export default function ProductCard({
             <span className="text-brand-500">{bathrooms}</span> baths
           </p>
           </div>
-          <p className='text-xs font-bold text-brand-500'>{location}</p>
+          <p className='text-xs pr-1 font-bold text-brand-500'>{location}</p>
           
           {/* <p className="text-brandText-100 font-semibold text-xs ">
             <span className="text-brand-500">800</span> Sq.ft
