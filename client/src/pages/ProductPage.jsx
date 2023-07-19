@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { userState } from '../features/auth/user';
 import { MinusIcon } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 const schema = yup
   .object({
@@ -79,7 +80,7 @@ export default function ProductPage() {
           if (obj.success) {
             toast.success(obj.message);
             setSubmitReview(() => false);
-            setRequest(!request)
+            setRequest(!request);
           } else {
             toast.error(obj.error.message);
             setSubmitReview(() => false);
@@ -95,13 +96,13 @@ export default function ProductPage() {
 
   useEffect(() => {
     getApartment();
-    console.log("Testing")
+    console.log('Testing');
   }, [request]);
 
   return (
     <>
       {loaded.length === 0 ? (
-        <div>loading...</div>
+        <Loading />
       ) : (
         <>
           <Header />
