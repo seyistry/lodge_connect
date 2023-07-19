@@ -43,7 +43,7 @@ export default function Search() {
     <>
       <Header />
       <div className="flex justify-center pt-5">
-        <div className="flex justify-between w-[80vw] items-center lg:w-[50vw] bg-[white] h-14 pl-6 rounded-full">
+        <div className="flex shadow justify-between w-[80vw] items-center lg:w-[50vw] bg-[white] h-14 pl-6 rounded-full">
           <input
             type="text"
             name="searchValue"
