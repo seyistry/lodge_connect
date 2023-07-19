@@ -27,7 +27,7 @@ export default function Hero() {
             type="text"
             name="searchValue"
             id=""
-            className="transparent outline-none focus:ring-0  h-10 py-4 pl-4 w-[70%]"
+            className="transparent outline-none focus:ring-0  h-10 py-4 pl-4 w-[78%]"
             placeholder="Search Apartment..."
             // onChange={(event) => setSearchValue(event.target.value)}
             required
