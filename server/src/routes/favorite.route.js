@@ -10,6 +10,6 @@ import {
 
 router.post("/:apartmentId", userAuth, addFavorite);
 router.get("/", userAuth, getFavorites);
-router.delete("/:favoriteId", userAuth, removeFavorite);
+router.delete("/:apartmentId", userAuth, removeFavorite);
 
 export default router;

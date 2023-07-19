@@ -26,17 +26,23 @@ export const getFavorites = tryCatch(async(req, res) => {
 	const { userId } = req;
 
 	// Fetch the user's favorite apartments
-	const favorites = await Favorite.find({ user: userId }).populate("apartment");
+	const favorites = await Favorite.find({ user: userId }).populate({
+		path: "apartment",
+		populate: {
+			path: "owner",
+			select: "first_name last_name",
+		}
+	})
 
 	return successResponse(res, "Favorites fetched successfully", { favorites });
 })
 
 export const removeFavorite = tryCatch(async(req, res) => {
 	const { userId } = req;
-	const { favoriteId } = req.params;
+	const { apartmentId } = req.params;
 
 	// check if the favorite exists for this user
-	const favorite = await Favorite.findOne({ _id: favoriteId, user: userId });
+	const favorite = await Favorite.findOne({ apartment: apartmentId, user: userId });
 	if (!favorite) throw new AppError("Favorites not found", StatusCodes.NOT_FOUND)
 
 	// remove the favorite from the database
