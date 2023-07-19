@@ -39,7 +39,7 @@ export default function BestChoice() {
         <p className="text-brandText-500 font-bold text-2xl pt-2">
           Popular Residences
         </p>
-        <div className="grid x md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-5 pt-2">
+        <div className="grid md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-5 pt-2">
           {loaded.map((item, index) => (
             <ProductCard
               key={index}

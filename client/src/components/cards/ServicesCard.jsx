@@ -20,7 +20,7 @@ ServicesCard.propTypes = {
 export default function ServicesCard(props) {
   const { title, description, index } = props;
   return (
-    <div className="flex w-[300px] h-[200px] bg-[white] rounded-lg justify-center items-center px-10 drop-shadow-[2px]">
+    <div className="flex w-[300px] h-[200px] bg-[white] rounded-lg justify-center items-center drop-shadow-[2px]">
       <div>
         <div className="flex justify-center">{icons[index]}</div>
         <p className="text-xl font-bold text-brandText-500 text-center">
