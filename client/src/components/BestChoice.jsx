@@ -47,7 +47,7 @@ export default function BestChoice() {
               id={item._id}
               image={item.image}
               price={item.price}
-              bedrooms={item.BestChoice}
+              bedrooms={item.bedrooms}
               bathrooms={item.bathrooms}
               title={item.title}
             />
