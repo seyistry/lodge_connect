@@ -285,9 +285,9 @@ export default function ProductPage() {
                   key={index}
                   className="max-w-2xl mx-auto mt-4 flex justify-center"
                 >
-                  <div className="w-full bg-[white] p-2">
+                  <div className="w-full bg-[white] px-2 pt-2">
                     {data.comment}
-                    <hr className="text-brandText-100 mt-2 text-center" />
+                    <hr className="text-[#dad8d8] mt-6 text-center" />
                     <div className="flex justify-between items-center">
                       <p className="text-xs text-brandText-500">
                         {data.user.first_name} {data.user.last_name}
