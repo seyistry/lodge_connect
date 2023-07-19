@@ -9,14 +9,22 @@ import cloudinary from '../config/cloudinary.js';
 // controller to fetch all the apartments in the database
 export const getAllApartments = tryCatch(async (req, res) => {
   // search filter parameters
-  const { location, title, numberFilters } = req.query;
+  const { query, numberFilters } = req.query;
   const queryObject = {};
 
-  if (location) {
-    queryObject.location = { $regex: location, $options: 'i' };
-  }
-  if (title) {
-    queryObject.title = { $regex: title, $options: 'i' };
+  // Logic to find apartments based on search query
+  if (query) {
+    const lowercaseQuery = query.toLowerCase();
+    const apartments = await Apartment.find({});
+    for (const apartment of apartments) {
+      if (apartment.location.toLowerCase() === query.toLowerCase()) {
+        queryObject.location = { $regex: lowercaseQuery, $options: 'i' };
+      } else if (apartment.title.toLowerCase() === query.toLowerCase()) {
+        queryObject.title = { $regex: lowercaseQuery, $options: 'i' };
+      } else {
+        throw new AppError('No apartments found matching your search query.', StatusCodes.NOT_FOUND);
+      }
+    }
   }
 
   // Logic for numeric filters
@@ -83,7 +91,7 @@ export const postApartment = tryCatch(async (req, res) => {
   const { title, description, price, location, bedrooms, bathrooms } = req.body;
 
   // Upload Image to cloudinary
-  const uploadImage = await cloudinary.uploader.upload(req.file.path)
+  const uploadImage = await cloudinary.uploader.upload(req.file.path);
 
   // create a new apartment object
   const apartment = new Apartment({
@@ -95,13 +103,13 @@ export const postApartment = tryCatch(async (req, res) => {
     bedrooms,
     bathrooms,
     owner,
-    cloudinary_id: uploadImage.public_id
+    cloudinary_id: uploadImage.public_id,
   });
 
   await apartment.save();
 
   successResponse(res, 'Apartment successfully created', { apartment }, StatusCodes.CREATED);
-}); 
+});
 
 export const updateApartment = tryCatch(async (req, res) => {
   const { apartmentId } = req.params;
