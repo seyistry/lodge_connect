@@ -19,6 +19,7 @@ export default function ProductCard({
   bathrooms,
   title,
   owner,
+  location
 }) {
   // console.log(item);
   const dispatch = useDispatch();
@@ -105,13 +106,17 @@ export default function ProductCard({
       </div>
       <div className="flex flex-col h-[40%] justify-between px-5 py-2">
         <p className="text-brandText-500 text-sm font-semibold">{title}</p>
-        <div className="flex gap-2">
-          <p className="text-brandText-100 font-semibold text-xs ">
+        <div className="flex justify-between items-center">
+          <div className='flex gap-2'>
+            <p className="text-brandText-100 font-semibold text-xs ">
             <span className="text-brand-500">{bedrooms}</span> beds
           </p>
           <p className="text-brandText-100 font-semibold text-xs ">
             <span className="text-brand-500">{bathrooms}</span> baths
           </p>
+          </div>
+          <p className='text-xs font-bold text-brand-500'>{location}</p>
+          
           {/* <p className="text-brandText-100 font-semibold text-xs ">
             <span className="text-brand-500">800</span> Sq.ft
           </p>

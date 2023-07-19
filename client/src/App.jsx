@@ -13,6 +13,7 @@ import Likes from './pages/Likes';
 import PostApartment from './pages/PostApartment';
 import VerifyResetOTP from './pages/VerifyResetOTP';
 import ResetPassword from './pages/ResetPassword';
+import Search from './pages/Search';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/resend-otp" element={<ResendOTP />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/search" element={<Search />} />
       <Route
         path="/likes"
         element={

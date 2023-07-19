@@ -88,6 +88,7 @@ export default function BestChoice() {
               bathrooms={item.bathrooms}
               title={item.title}
               owner={item.owner}
+              location={item.location}
             />
           ))}
         </div>

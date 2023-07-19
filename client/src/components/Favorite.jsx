@@ -72,6 +72,7 @@ export default function Favorite() {
                       bedrooms={liked[item]?.apartment?.bedrooms}
                       bathrooms={liked[item]?.apartment?.bathrooms}
                       title={liked[item]?.apartment?.title}
+                      location={liked[item]?.apartment?.location}
                     />
                   );
                 })}
