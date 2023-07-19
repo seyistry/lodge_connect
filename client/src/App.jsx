@@ -16,6 +16,7 @@ import ResetPassword from './pages/ResetPassword';
 
 export default function App() {
   return (
+    
     <Routes>
       <Route index element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />

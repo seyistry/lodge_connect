@@ -27,6 +27,7 @@ export default function ProductPage() {
   // console.log(userBio)
   const { id } = useParams();
   const [loaded, setLoaded] = useState([]);
+  const [request, setRequest] = useState(false);
   const [submitReview, setSubmitReview] = useState(false);
 
   const {
@@ -56,7 +57,7 @@ export default function ProductPage() {
   };
 
   const postReview = async (data) => {
-    console.log(userBio);
+    // console.log(userBio);
     if (userBio === null) {
       console.log(location.pathname);
       navigate('/login', { state: { path: location.pathname } });
@@ -78,6 +79,7 @@ export default function ProductPage() {
           if (obj.success) {
             toast.success(obj.message);
             setSubmitReview(() => false);
+            setRequest(!request)
           } else {
             toast.error(obj.error.message);
             setSubmitReview(() => false);
@@ -93,7 +95,8 @@ export default function ProductPage() {
 
   useEffect(() => {
     getApartment();
-  }, []);
+    console.log("Testing")
+  }, [request]);
 
   return (
     <>

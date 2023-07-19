@@ -29,7 +29,7 @@ export default function Services() {
         omnis.
       </p>
       <div className="mt-10 bg-gradient-to-b from-brand-100 to-[#F4F7F6]">
-        <div className="flex flex-col items-center gap-10 mx-auto max-w-7xl lg:flex-row lg:justify-around px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center gap-10 mx-auto max-w-7xl sm:flex-row md:flex-row lg:flex-row lg:justify-around px-4 sm:px-6 lg:px-8">
           {services.map((item, index) => (
             <ServicesCard key={index} {...item} index={index} />
           ))}

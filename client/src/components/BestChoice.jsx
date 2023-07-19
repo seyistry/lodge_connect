@@ -2,9 +2,46 @@ import { MinusIcon } from '@heroicons/react/24/outline';
 import ProductCard from './cards/ProductCard';
 import { base_url } from '../utils/apiLinks';
 import { useEffect, useState } from 'react';
+import { userState } from '../features/auth/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { addlikes } from '../features/property/favorite';
 
 export default function BestChoice() {
   const [loaded, setLoaded] = useState([]);
+  const userBio = useSelector(userState);
+  const dispatch = useDispatch();
+
+  const getLikes = async () => {
+    const bearer = userBio?.token;
+    if (bearer) {
+      try {
+        await fetch(`${base_url}/lodge-connect/favorite/`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${bearer}`,
+          },
+        }).then((response) => {
+          response.json().then((obj) => {
+            if (obj.success) {
+              // console.log(obj.payload.favorites);
+              if (obj.payload.favorites?.apartment) {
+                const toObj = obj.payload.favorites.reduce(
+                  (obj, item) => ({ ...obj, [item.apartment._id]: item }),
+                  {}
+                );
+                // console.log(toObj);
+                // console.log(obj.payload.favorites);
+                dispatch(addlikes(toObj));
+              }
+            }
+          });
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   const getAllApartments = async () => {
     try {
       await fetch(`${base_url}/lodge-connect/apartment/all`, {
@@ -50,6 +87,7 @@ export default function BestChoice() {
               bedrooms={item.bedrooms}
               bathrooms={item.bathrooms}
               title={item.title}
+              owner={item.owner}
             />
           ))}
         </div>

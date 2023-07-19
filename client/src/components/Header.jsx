@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeUser, userState } from '../features/auth/user';
 import { NavHashLink } from 'react-router-hash-link';
+import { cleanLikes } from '../features/property/favorite';
 
 const navigation = [
   { name: 'Rent', href: '#', current: true },
@@ -114,7 +115,10 @@ export default function Header() {
                                 <Menu.Item>
                                   <Link to="/login">
                                     <span
-                                      onClick={() => dispatch(removeUser())}
+                                      onClick={() => {
+                                        dispatch(removeUser());
+                                        dispatch(cleanLikes());
+                                      }}
                                       className="block px-4 py-2 text-sm text-[red]/70 text-BrandText-500 hover:text-brand-500"
                                     >
                                       Sign Out
@@ -227,7 +231,10 @@ export default function Header() {
 
                         <Disclosure.Button
                           as="a"
-                          onClick={() => dispatch(removeUser())}
+                          onClick={() => {
+                            dispatch(removeUser());
+                            dispatch(clea());
+                          }}
                           className="block cursor-pointer text-[red]/70 rounded-md px-3 py-2 text-base font-medium text-brandText-500 hover:text-brand-500"
                         >
                           Sign Out

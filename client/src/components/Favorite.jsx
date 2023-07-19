@@ -27,7 +27,7 @@ export default function Favorite() {
             setLoaded(obj.payload.favorites);
             // console.log(obj.payload.favorites)
             const toObj = obj.payload.favorites.reduce(
-              (obj, item) => ({ ...obj, [item.apartment._id]: item }),
+              (obj, item) => ({ ...obj, [item?.apartment?._id]: item }),
               {}
             );
             // console.log(toObj);
@@ -60,18 +60,18 @@ export default function Favorite() {
                 Liked Residences
               </p>
               <div className="grid x md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-5 pt-2">
-                {Object.keys(liked).map((item) => {
+                {Object.keys(liked).map((item, index) => {
                   // console.log(liked[item])
                   return (
                     <ProductCard
-                      key={item._id}
+                      key={index}
                       item={liked[item]}
-                      id={liked[item].apartment._id}
-                      image={liked[item].apartment.image}
-                      price={liked[item].apartment.price}
-                      bedrooms={liked[item].apartment.bedrooms}
-                      bathrooms={liked[item].apartment.bathrooms}
-                      title={liked[item].apartment.title}
+                      id={liked[item]?.apartment?._id}
+                      image={liked[item]?.apartment?.image}
+                      price={liked[item]?.apartment?.price}
+                      bedrooms={liked[item]?.apartment?.bedrooms}
+                      bathrooms={liked[item]?.apartment?.bathrooms}
+                      title={liked[item]?.apartment?.title}
                     />
                   );
                 })}

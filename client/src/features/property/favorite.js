@@ -12,10 +12,13 @@ export const likes = createSlice({
     removelikes: (state, action) => {
       Reflect.deleteProperty(state.value, action.payload);
     },
+    cleanLikes: (state) => {
+      state.value = {};
+    },
   },
 });
 
-export const { addlikes, removelikes } = likes.actions;
+export const { addlikes, removelikes, cleanLikes } = likes.actions;
 
 export const likesState = (state) => state.likes.value;
 

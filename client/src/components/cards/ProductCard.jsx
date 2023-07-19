@@ -18,13 +18,14 @@ export default function ProductCard({
   bedrooms,
   bathrooms,
   title,
+  owner,
 }) {
   // console.log(item);
   const dispatch = useDispatch();
   const liked = useSelector(likesState);
   const userAuth = useSelector(userState);
   const navigate = useNavigate();
-  // console.log(liked);
+  // console.log(item);
 
   const addLikes = async () => {
     const bearer = userAuth.token;
@@ -121,17 +122,14 @@ export default function ProductCard({
         <p className="text-brand-500 font-semibold text-md">{`₦${price}`}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <img
-                className="h-7 w-7 rounded-full"
-                src={
-                  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                }
-                alt=""
-              />
+            <div className="flex-shrink-0 bg-brand-500 p-2 rounded-full">
+              <p className='text-xs font-bold text-[white]'>
+                {owner?.first_name.charAt(0).toUpperCase()}
+                {owner?.last_name.charAt(0).toUpperCase()}
+              </p>
             </div>
             <p className="pl-2 text-brandText-100 text-xs font-medium">
-              John Doe
+              {owner?.first_name} {owner?.last_name}
             </p>
           </div>
           <Link to={`/product/${id}`}>
