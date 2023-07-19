@@ -14,7 +14,7 @@ export default function BestChoice() {
         response.json().then((obj) => {
           if (obj.success) {
             setLoaded(obj.payload.apartments);
-            console.log(obj.payload.apartments);
+            // console.log(obj.payload.apartments);
           }
         });
       });
