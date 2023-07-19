@@ -88,9 +88,6 @@ export default function LoginPage() {
             <h2 className="font-bold text-2xl mb-4 text-brandText-500">
               Login
             </h2>
-            <p className="mb-4 text-brandText-500">
-              Create your account. It's free and only take a minute
-            </p>
 
             {/* create the input forms */}
             <form onSubmit={handleSubmit(onSubmit)}>
