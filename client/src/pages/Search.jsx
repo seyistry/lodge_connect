@@ -41,6 +41,7 @@ export default function Search() {
   }, [value]);
   return (
     <>
+      {console.log(value)}
       <Header />
       <div className="flex justify-center pt-5">
         <div className="flex shadow justify-between w-[80vw] items-center lg:w-[50vw] bg-[white] h-14 pl-6 rounded-full">
@@ -57,7 +58,9 @@ export default function Search() {
       </div>
       {loaded.length === 0 ? (
         <div className="h-[53vh] flex items-center justify-center">
-          <p className="animate-bounce text-brandText-100 font-bold text-2xl">No result</p>
+          <p className="animate-bounce text-brandText-100 font-bold text-2xl">
+            No result
+          </p>
         </div>
       ) : (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">

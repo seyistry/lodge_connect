@@ -96,7 +96,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     getApartment();
-    console.log('Testing');
+    // console.log('Testing');
   }, [request]);
 
   return (
