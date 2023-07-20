@@ -14,17 +14,7 @@ export const getAllApartments = tryCatch(async (req, res) => {
 
   // Logic to find apartments based on search query
   if (query) {
-    const lowercaseQuery = query.toLowerCase();
-    const apartments = await Apartment.find({});
-    for (const apartment of apartments) {
-      if (apartment.location.toLowerCase() === query.toLowerCase()) {
-        queryObject.location = { $regex: lowercaseQuery, $options: 'i' };
-      } else if (apartment.title.toLowerCase() === query.toLowerCase()) {
-        queryObject.title = { $regex: lowercaseQuery, $options: 'i' };
-      } else {
-        throw new AppError('No apartments found matching your search query.', StatusCodes.NOT_FOUND);
-      }
-    }
+    queryObject.location = { $regex: query, $options: 'i' };
   }
 
   // Logic for numeric filters
