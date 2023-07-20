@@ -41,10 +41,10 @@ export const getAllApartments = tryCatch(async (req, res) => {
   }
 
   // implementing pagination to limit returned apartments to 5 per page
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 5;
-  const skip = (page - 1) * limit;
-  const apartments = await Apartment.find(queryObject).skip(skip).limit(limit).populate({
+  // const page = Number(req.query.page) || 1;
+  // const limit = Number(req.query.limit) || 5;
+  // const skip = (page - 1) * limit;
+  const apartments = await Apartment.find(queryObject).populate({
     path: "owner",
     select: "first_name last_name",
   });
