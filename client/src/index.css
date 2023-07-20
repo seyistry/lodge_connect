@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Raleway', sans-serif;
+    scroll-behavior: smooth;
+  }
+}
+
+textarea {
+  @apply w-full border my-1 py-2 rounded-2xl;
+}
+
+body {
+  background-color: #fafcfc;
+}
