@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { base_url } from '../utils/apiLinks';
 import { ToastContainer, toast } from 'react-toastify';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 
 const schema = yup
   .object({
@@ -47,15 +48,16 @@ const schema = yup
 export default function PostForm() {
   const [submit, setSubmit] = useState(false);
   const [add, setAdd] = useState(false);
-  const [file, setFile] = useState([]);
-  const handleChange = (e) => {
-    const fileInput = e.target.files;
-    const listing = [];
-    for (const file of fileInput) {
-      listing.push(file.name);
-    }
-    setFile(listing);
-  };
+  const navigate = useNavigate();
+  // const [file, setFile] = useState([]);
+  // const handleChange = (e) => {
+  //   const fileInput = e.target.files;
+  //   const listing = [];
+  //   for (const file of fileInput) {
+  //     listing.push(file.name);
+  //   }
+  //   setFile(listing);
+  // };
 
   const userBio = useSelector(userState);
   const {
@@ -96,7 +98,9 @@ export default function PostForm() {
           if (obj.success) {
             toast.success(obj.message);
             setSubmit(() => false);
-            setAdd(false);
+            // console.log(obj)
+            // setAdd(false);
+            navigate(`/product/${obj.payload.apartment._id}`);
           } else {
             console.log(obj);
             setSubmit(() => false);
@@ -255,14 +259,14 @@ export default function PostForm() {
                 // className="hidden"
                 // onChange={handleChange}
               />
-              {file.length === 0 && errors.image && (
+              {/* {file.length === 0 && errors.image && (
                 <p className="text-sm text-[red]">{errors.image?.message}</p>
               )}
               {file.map((name, index) => (
                 <p key={index} className="text-xs italic text-brand-500">
                   {name}
                 </p>
-              ))}
+              ))} */}
             </div>
             <div className="mt-5 flex justify-center">
               {/* <button
