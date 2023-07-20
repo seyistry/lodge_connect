@@ -2,19 +2,21 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import heroBg from '../assets/images/herobg.jpg';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { userState } from '../features/auth/user';
+import { useSelector } from 'react-redux';
 
 export default function Hero() {
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState('');
+  const userBio = useSelector(userState);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const searchValue = event.target.searchValue.value;
     // console.log(searchValue)
-    navigate('search', { state: searchValue })
+    navigate('search', { state: searchValue });
   };
   return (
-    <section className="bg-brand-200">
+    <section className="bg-brand-200 pb-10">
       <h1 className="text-center pt-20 capitalize lg:text-6xl md:text-4xl text-4xl font-bold text-brandText-500">
         We Help To Lease <br />& Rent You House
       </h1>
@@ -41,10 +43,14 @@ export default function Hero() {
           </button>
         </form>
       </div>
-      <div
-        className="h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[70vh] w-full my-8 bg-center"
-        style={{ backgroundImage: `url(${heroBg})` }}
-      />
+      {userBio ? (
+        <></>
+      ) : (
+        <div
+          className="h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[70vh] w-full my-8 bg-center"
+          style={{ backgroundImage: `url(${heroBg})` }}
+        />
+      )}
     </section>
   );
 }
