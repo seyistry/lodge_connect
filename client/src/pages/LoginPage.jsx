@@ -117,7 +117,7 @@ export default function LoginPage() {
                 )}
                 <Link to="/forgot-password">
                   <p className="text-right text-sm py-1 text-brandText-500 cursor-pointer hover:text-brand-500 hover:italic">
-                    Reset password
+                    Forgot password
                   </p>
                 </Link>
               </div>

@@ -81,7 +81,7 @@ export default function ForgotPassword() {
               Verify your email address
             </h2>
             <p className="mb-4 text-brandText-500">
-              Your verification code has been sent to your email address.
+              Your verification code will be sent to your email address.
             </p>
 
             {/* create the input forms */}
