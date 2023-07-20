@@ -47,7 +47,7 @@ export default function Hero() {
         <></>
       ) : (
         <div
-          className="h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[70vh] w-full my-8 bg-center"
+          className="h-[30vh] sm:h-[40vh] md:h-[50vh] lg:h-[70vh] w-full mt-8 bg-center"
           style={{ backgroundImage: `url(${heroBg})` }}
         />
       )}

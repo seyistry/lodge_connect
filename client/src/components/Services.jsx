@@ -25,7 +25,7 @@ export default function Services() {
         <></>
       ) : (
         <>
-          <h2 className="text-center text-brandText-500 text-md md:text-xl lg:text-3xl font-bold px-[30%]">
+          <h2 className="text-center pt-6 text-brandText-500 text-md md:text-xl lg:text-3xl font-bold px-[30%]">
             What Services <span className="text-brand-500">Lodge Connect</span>{' '}
             Provide That Help People
           </h2>
