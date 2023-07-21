@@ -1,6 +1,7 @@
 import stripe from "stripe";
 import Payment from "../models/payment.model.js";
 import tryCatch from "../utils/helpers/tryCatch.helper.js";
+import { successResponse } from "../utils/libs/response.js";
 
 // Set up the Stripe API with your Stripe API key
 const stripeAPI = new stripe(process.env.STRIPE_PRIVATE_KEY);
@@ -30,5 +31,7 @@ export const processPayment = tryCatch(async (req, res) => {
 	await payment.save();
 
 	// Send the client secret to the frontend to complete the payment
-	res.json({ clientSecret: paymentIntent.client_secret });
+	return successResponse(res, "Payment completed successfully", {
+		clientSecret: paymentIntent.client_secret,
+	});
 });
