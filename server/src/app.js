@@ -8,6 +8,7 @@ import authRouter from './routes/auth.route.js';
 import apartmentRouter from './routes/apartment.route.js';
 import favoritesRouter from './routes/favorite.route.js';
 import reviewsRouter from './routes/reviews.route.js';
+import paymentRouter from './routes/payment.route.js';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/lodge-connect/user', authRouter);
 app.use('/lodge-connect/apartment', apartmentRouter);
 app.use('/lodge-connect/favorite', favoritesRouter);
 app.use('/lodge-connect/apartment/:apartmentId/reviews', reviewsRouter);
+app.use("/lodge-connect/payment", paymentRouter);
 
 // index route
 app.get('/', (req, res) => {

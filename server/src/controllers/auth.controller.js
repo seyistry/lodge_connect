@@ -220,7 +220,7 @@ export const resetPassword = tryCatch(async(req, res) => {
   user.password = hashedPassword
   user.save();
 
-  sendEmail(
+  await sendEmail(
     user.email,
     "Password Reset Successful",
     `<h1>Password Reset Successful</h1>
