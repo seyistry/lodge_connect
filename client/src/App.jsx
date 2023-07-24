@@ -15,10 +15,10 @@ import VerifyResetOTP from './pages/VerifyResetOTP';
 import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
 import PaymentPage from './pages/PaymentPage';
+import EditPost from './pages/EditPost';
 
 export default function App() {
   return (
-    
     <Routes>
       <Route index element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
@@ -57,9 +57,17 @@ export default function App() {
       <Route
         path="/payment/:id"
         element={
-          // <RequireAuth>
+          <RequireAuth>
             <PaymentPage />
-          // </RequireAuth>
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/edit/:id"
+        element={
+          <RequireAuth>
+            <EditPost />
+          </RequireAuth>
         }
       />
       <Route path="*" element={<div>404</div>} />

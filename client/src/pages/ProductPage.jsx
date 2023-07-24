@@ -13,6 +13,7 @@ import { userState } from '../features/auth/user';
 import { MinusIcon } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
 import Loading from '../components/Loading';
+import { Link } from 'react-router-dom';
 
 const schema = yup
   .object({
@@ -35,6 +36,7 @@ export default function ProductPage() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -81,6 +83,10 @@ export default function ProductPage() {
             toast.success(obj.message);
             setSubmitReview(() => false);
             setRequest(!request);
+            reset({
+              comment: '',
+              rating: 0,
+            });
           } else {
             toast.error(obj.error.message);
             setSubmitReview(() => false);
@@ -146,24 +152,28 @@ export default function ProductPage() {
                       <p className="font-semibold text-2xl text-brandText-500">
                         {`₦${loaded.price}`}
                       </p>
-                      <button
-                        type="submit"
-                        className="border-2 border-brand-500 text-brand-500 font-bold rounded-full py-2 mt-2 hover:bg-brand-500 hover:text-[white]"
-                      >
-                        Edit
-                      </button>
+                      <Link to={`/edit/${id}`} state={{ ...loaded }}>
+                        <button
+                          type="submit"
+                          className="w-full border-2 border-brand-500 text-brand-500 font-bold rounded-full py-2 mt-2 hover:bg-brand-500 hover:text-[white]"
+                        >
+                          Edit
+                        </button>
+                      </Link>
                     </div>
                   ) : (
                     <div className="bg-[white] p-5 flex flex-col">
                       <p className="font-semibold text-2xl text-brandText-500">
                         {`₦${loaded.price}`}
                       </p>
-                      <button
-                        type="submit"
-                        className="border-2 border-brand-500 text-brand-500 font-bold rounded-full py-2 mt-2 hover:bg-brand-500 hover:text-[white]"
-                      >
-                        Rent
-                      </button>
+                      {/* <Link to={`/payment/${id}`} state={{ ...loaded }}> */}
+                        <button
+                          type="submit"
+                          className="w-full border-2 border-brand-500 text-brand-500 font-bold rounded-full py-2 mt-2 hover:bg-brand-500 hover:text-[white]"
+                        >
+                          Rent
+                        </button>
+                      {/* </Link> */}
                     </div>
                   )}
 
