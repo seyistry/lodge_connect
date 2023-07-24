@@ -25,7 +25,7 @@ export default function Favorite() {
         response.json().then((obj) => {
           if (obj.success) {
             setLoaded(obj.payload.favorites);
-            // console.log(obj.payload.favorites)
+            console.log(obj.payload.favorites)
             const toObj = obj.payload.favorites.reduce(
               (obj, item) => ({ ...obj, [item?.apartment?._id]: item }),
               {}
@@ -73,6 +73,7 @@ export default function Favorite() {
                       bathrooms={liked[item]?.apartment?.bathrooms}
                       title={liked[item]?.apartment?.title}
                       location={liked[item]?.apartment?.location}
+                      owner={liked[item]?.apartment?.owner}
                     />
                   );
                 })}
