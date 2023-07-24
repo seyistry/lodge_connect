@@ -14,6 +14,7 @@ import PostApartment from './pages/PostApartment';
 import VerifyResetOTP from './pages/VerifyResetOTP';
 import ResetPassword from './pages/ResetPassword';
 import Search from './pages/Search';
+import PaymentPage from './pages/PaymentPage';
 
 export default function App() {
   return (
@@ -51,6 +52,14 @@ export default function App() {
           <RequireAuth>
             <PostApartment />
           </RequireAuth>
+        }
+      />
+      <Route
+        path="/payment/:id"
+        element={
+          // <RequireAuth>
+            <PaymentPage />
+          // </RequireAuth>
         }
       />
       <Route path="*" element={<div>404</div>} />
