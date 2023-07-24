@@ -21,7 +21,7 @@ export default function ProductCard({
   owner,
   location
 }) {
-  // console.log(item);
+  // console.log(title + " " + id);
   const dispatch = useDispatch();
   const liked = useSelector(likesState);
   const userAuth = useSelector(userState);
@@ -55,7 +55,7 @@ export default function ProductCard({
     const bearer = userAuth.token;
     // console.log(item);
     try {
-      await fetch(`${base_url}/lodge-connect/favorite/${item._id}`, {
+      await fetch(`${base_url}/lodge-connect/favorite/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${bearer}`,
