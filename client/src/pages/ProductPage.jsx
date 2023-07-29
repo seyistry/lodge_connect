@@ -166,14 +166,14 @@ export default function ProductPage() {
                       <p className="font-semibold text-2xl text-brandText-500">
                         {`₦${loaded.price}`}
                       </p>
-                      {/* <Link to={`/payment/${id}`} state={{ ...loaded }}> */}
+                      <Link to={`/payment/${id}`} state={{ ...loaded }}>
                         <button
                           type="submit"
                           className="w-full border-2 border-brand-500 text-brand-500 font-bold rounded-full py-2 mt-2 hover:bg-brand-500 hover:text-[white]"
                         >
                           Rent
                         </button>
-                      {/* </Link> */}
+                      </Link>
                     </div>
                   )}
 

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, useStripe } from '@stripe/react-stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
 // import CheckoutForm from "./CheckoutForm";
 import '../App.css';
 import CheckoutForm from '../components/CheckoutForm';
 import { useLocation, useParams } from 'react-router-dom';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -20,11 +22,23 @@ export default function PaymentPage() {
   const { id } = useParams();
   let { state } = useLocation();
 
+  const appearance = {
+    theme: 'stripe',
+  };
+  const options = {
+    mode: 'payment',
+    amount: state.price,
+    currency: 'usd',
+    appearance,
+  };
+
   return (
     <div className="App">
-      <Elements stripe={stripePromise}>
-        <CheckoutForm id={id} price={state.price} />
+      <Header />
+      <Elements stripe={stripePromise} options={options}>
+        <CheckoutForm id={id} state={state} />
       </Elements>
+      <Footer />
     </div>
   );
 }

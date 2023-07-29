@@ -1,118 +1,106 @@
-import React, { useState, useEffect } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import '../App.css';
+import React, { useState } from 'react';
+import {
+  useStripe,
+  useElements,
+  PaymentElement,
+} from '@stripe/react-stripe-js';
+import { base_url } from '../utils/apiLinks';
 import { userState } from '../features/auth/user';
 import { useSelector } from 'react-redux';
-import { base_url } from '../utils/apiLinks';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-export default function CheckoutForm({ id, price }) {
-  const [succeeded, setSucceeded] = useState(false);
-  const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState('');
-  const [disabled, setDisabled] = useState(true);
-  const [clientSecret, setClientSecret] = useState('');
+export default function CheckoutForm({ id, state }) {
+  // console.log(state);
   const stripe = useStripe();
   const elements = useElements();
   const userBio = useSelector(userState);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Create PaymentIntent as soon as the page loads
+  const [errorMessage, setErrorMessage] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const handleError = (error) => {
+    setLoading(false);
+    setErrorMessage(error.message);
+  };
+
+  const handleSubmit = async (event) => {
+    // We don't want to let default form submission happen here,
+    // which would refresh the page.
+    event.preventDefault();
+
+    if (!stripe) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    setLoading(true);
+
+    // Trigger form validation and wallet collection
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      handleError(submitError);
+      return;
+    }
     const bearer = userBio.token;
-    window
-      .fetch(`${base_url}/lodge-connect/payment/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${bearer}`,
-        },
-        body: JSON.stringify({ amount: price, paymentMethod: 'pm_card_visa' }),
-      })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setClientSecret(data.clientSecret);
+    // Create the PaymentIntent and obtain clientSecret
+    const res = await fetch(`${base_url}/lodge-connect/payment/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${bearer}`,
+      },
+      body: JSON.stringify({
+        amount: state.price,
+        paymentMethod: 'pm_card_visa',
+      }),
+    }).then((response) => {
+      response.json().then((obj) => {
+        if (obj.success) {
+          toast.success(obj.message);
+          navigate('/success');
+        } else {
+          toast.error(obj.error.message);
+          setLoading(false);
+        }
       });
-  }, []);
-
-  const cardStyle = {
-    style: {
-      base: {
-        color: '#32325d',
-        fontFamily: 'Arial, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '16px',
-        '::placeholder': {
-          color: '#32325d',
-        },
-      },
-      invalid: {
-        fontFamily: 'Arial, sans-serif',
-        color: '#fa755a',
-        iconColor: '#fa755a',
-      },
-    },
-  };
-
-  const handleChange = async (event) => {
-    // Listen for changes in the CardElement
-    // and display any errors as the customer types their card details
-    setDisabled(event.empty);
-    setError(event.error ? event.error.message : '');
-  };
-
-  const handleSubmit = async (ev) => {
-    ev.preventDefault();
-    setProcessing(true);
-
-    const payload = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-      },
     });
 
-    if (payload.error) {
-      setError(`Payment failed ${payload.error.message}`);
-      setProcessing(false);
-    } else {
-      setError(null);
-      setProcessing(false);
-      setSucceeded(true);
-    }
+    // Confirm the PaymentIntent using the details collected by the Payment Element
+    // const { error } = await stripe.confirmPayment({
+    //   elements,
+    //   clientSecret,
+    //   confirmParams: {
+    //     return_url: 'http://localhost:5173/',
+    //   },
+    // });
+
+    // if (error) {
+    // This point is only reached if there's an immediate error when
+    // confirming the payment. Show the error to your customer (for example, payment details incomplete)
+    // handleError(error);
+    // } else {
+    // Your customer is redirected to your `return_url`. For some payment
+    // methods like iDEAL, your customer is redirected to an intermediate
+    // site first to authorize the payment, then redirected to the `return_url`.
+    // }
   };
 
   return (
-    <div className="flex justify-center h-[100vh] w-[100vw] items-center">
-      <form id="payment-form" onSubmit={handleSubmit}>
-        <CardElement
-          id="card-element"
-          options={cardStyle}
-          onChange={handleChange}
-        />
-        <button disabled={processing || disabled || succeeded} id="submit">
-          <span id="button-text">
-            {processing ? (
-              <div className="spinner" id="spinner"></div>
-            ) : (
-              'Pay now'
-            )}
-          </span>
+    <div className="stripeBody">
+      <ToastContainer />
+      <form className="stripeForm" onSubmit={handleSubmit}>
+        <PaymentElement />
+        <button
+          className="stripeButton bg-[#5469d4]"
+          type="submit"
+          disabled={!stripe || loading}
+        >
+          Pay {state.price}
         </button>
-        {/* Show any error that happens when processing the payment */}
-        {error && (
-          <div className="card-error" role="alert">
-            {error}
-          </div>
-        )}
-        {/* Show a success message upon completion */}
-        <p className={succeeded ? 'result-message' : 'result-message hidden'}>
-          Payment succeeded, see the result in your
-          <a href={`https://dashboard.stripe.com/test/payments`}>
-            {' '}
-            Stripe dashboard.
-          </a>{' '}
-          Refresh the page to pay again.
-        </p>
+        {errorMessage && <div>{errorMessage}</div>}
       </form>
     </div>
   );
